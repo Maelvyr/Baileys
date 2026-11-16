@@ -354,3 +354,5 @@ compatibilidad esten listos.
 - Evidencia live inbound de grupo: `evidence/live-group-inbound-2026-11-10.json`.
 
 - Soak 72h en VPS: `evidence/vps-soak-2026-11-12.json`.
+
+- Soak 72h en VPS completado: `evidence/vps-soak-72h-2026-11-16.json`.
