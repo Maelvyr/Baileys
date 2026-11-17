@@ -9,7 +9,8 @@
     "network": "host",
     "backend": "wasm",
     "keepAliveIntervalMs": 25000,
-    "tcpKeepAliveMs": 30000
+    "tcpKeepAliveMs": 30000,
+    "imageId": "db8f53be5885"
   },
   "instrumentation": [
     "raw ws close code, reason and wasClean",
@@ -27,13 +28,21 @@
     "filter": "tcp port 443",
     "rotation": "10 MB x 20 files",
     "path": "/var/log/baileys-soak/capture.pcap*",
-    "payload": false
+    "payload": false,
+    "watcher": "baileys-1006-watch.service",
+    "analysis": "network/summary.txt + tcp-close-flags.txt"
   },
   "initialMetrics": {
     "pingRttMs": 65,
     "eventLoopP99Ms": 21.27,
     "eventLoopMaxMs": 51.71,
     "rssMb": 130.5,
-    "messages": 1096
+    "messages": 1096,
+    "wasmBenchmark": {
+      "roundtrips": 5000,
+      "totalMs": 3157.92,
+      "roundtripsPerSecond": 1583,
+      "avgRoundtripMs": 0.632
+    }
   }
 }
