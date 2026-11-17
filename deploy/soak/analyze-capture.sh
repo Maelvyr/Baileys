@@ -12,6 +12,8 @@ for file in "$dir"/capture.pcap*; do
 	tcpdump -nn -tttt -r "$file" 'tcp[tcpflags] & (tcp-rst|tcp-fin) != 0' >>"$flags" 2>>"$out/tcpdump.err" || true
 done
 
+python3 "$(dirname "$0")/summarize-flows.py" "$dir"/capture.pcap* >"$out/flows.tsv" 2>"$out/flows.err" || true
+
 {
 	printf 'fin_rst_lines=%s\n' "$(wc -l <"$flags" | tr -d ' ')"
 	printf 'pcap_files=%s\n' "$(find "$dir" -maxdepth 1 -name 'capture.pcap*' | wc -l | tr -d ' ')"
