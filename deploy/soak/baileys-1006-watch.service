@@ -1,0 +1,13 @@
+[Unit]
+Description=Preserve Baileys 1006 logs and packet capture
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/opt/baileys-wasm/deploy/soak/watch-1006.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

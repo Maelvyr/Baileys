@@ -26,3 +26,15 @@ journal con el tag `baileys-wasm-soak`:
 ```bash
 journalctl -t baileys-wasm-soak -n 80 --no-pager -o cat
 ```
+
+## Captura automatica de un 1006
+
+`baileys-1006-watch.service` escucha el journal y, cuando aparece un close
+1006, copia los pcap y las ultimas 500 lineas a
+`/var/log/baileys-soak/evidence/<timestamp>/`.
+
+```bash
+install -m 644 deploy/soak/baileys-1006-watch.service /etc/systemd/system/
+systemctl daemon-reload
+systemctl enable --now baileys-1006-watch
+```
