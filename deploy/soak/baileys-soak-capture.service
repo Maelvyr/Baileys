@@ -6,7 +6,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 ExecStartPre=/usr/bin/mkdir -p /var/log/baileys-soak
-ExecStart=/usr/bin/tcpdump -i eth0 -n -s 80 -C 10 -W 20 -w /var/log/baileys-soak/capture.pcap 'tcp port 443'
+ExecStart=/usr/bin/tcpdump -i eth0 -n -Z root -s 80 -C 10 -W 20 -w /var/log/baileys-soak/capture.pcap 'tcp port 443'
 Restart=always
 RestartSec=5
 
