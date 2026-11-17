@@ -1,0 +1,11 @@
+.git
+.gitignore
+.tools
+.yarn
+node_modules
+lib
+coverage
+docs
+docker
+contactos-por-cedula.vcf
+*.log
