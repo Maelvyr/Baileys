@@ -915,12 +915,14 @@ export const makeSocket = (config: SocketConfig) => {
 		} finally {
 			if (!closed) {
 				keepAliveReq = setTimeout(runKeepAlive, keepAliveIntervalMs)
+				keepAliveReq.unref?.()
 			}
 		}
 	}
 
 	const startKeepAliveRequest = () => {
 		keepAliveReq = setTimeout(runKeepAlive, keepAliveIntervalMs)
+		keepAliveReq.unref?.()
 	}
 
 	/** i have no idea why this exists. pls enlighten me */
