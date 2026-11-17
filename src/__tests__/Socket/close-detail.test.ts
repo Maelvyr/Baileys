@@ -22,6 +22,7 @@ const waitForClose = async (updates: any[]) => {
 		if (closed) return closed
 		await new Promise(resolve => setTimeout(resolve, 25))
 	}
+
 	return undefined
 }
 
