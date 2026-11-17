@@ -1,8 +1,8 @@
 {
   "date": "2026-11-17",
   "campaign": "1006 transport hunt",
-  "startedAtLocal": "2026-11-17T10:11:05-04:00",
-  "targetEndLocal": "2026-11-20T10:11:05-04:00",
+  "startedAtLocal": "2026-11-17T10:24:57-04:00",
+  "targetEndLocal": "2026-11-20T10:24:57-04:00",
   "runtime": {
     "dockerImage": "baileys-wasm-soak:local",
     "container": "baileys-wasm-soak",
