@@ -38,3 +38,7 @@ install -m 644 deploy/soak/baileys-1006-watch.service /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable --now baileys-1006-watch
 ```
+
+El watcher ejecuta `analyze-capture.sh` sobre la evidencia copiada. El resumen
+queda en `network/summary.txt` y los FIN/RST en
+`network/tcp-close-flags.txt`, siempre sin payload.
