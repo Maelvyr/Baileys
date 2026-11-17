@@ -1306,7 +1306,8 @@ export namespace proto {
             AI_INTERJECTIONS_ENABLED = 86,
             AI_RICH_RESPONSE_READ_ALOUD_ENABLED = 87,
             AI_RICH_RESPONSE_ITEM_LISTS_ENABLED = 88,
-            RICH_RESPONSE_SIDE_BY_SIDE_BUFFER_BOTH = 89
+            RICH_RESPONSE_SIDE_BY_SIDE_BUFFER_BOTH = 89,
+            AI_MUSE_JARVIS_ENVELOPE_GZIP_ENABLED = 90
         }
     }
 
@@ -3172,6 +3173,7 @@ export namespace proto {
         isBotJidDbMigrated?: (boolean|null);
         companionAddPeerPayload?: (Uint8Array|null);
         isCompanionRegistrationFgsEnabled?: (boolean|null);
+        isCompanionPairingProgressUiEnabled?: (boolean|null);
     }
 
     class ClientPairingProps implements IClientPairingProps {
@@ -3184,6 +3186,7 @@ export namespace proto {
         public isBotJidDbMigrated?: (boolean|null);
         public companionAddPeerPayload?: (Uint8Array|null);
         public isCompanionRegistrationFgsEnabled?: (boolean|null);
+        public isCompanionPairingProgressUiEnabled?: (boolean|null);
         public static create(properties?: proto.IClientPairingProps): proto.ClientPairingProps;
         public static encode(m: proto.IClientPairingProps, w?: $protobuf.Writer): $protobuf.Writer;
         public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.ClientPairingProps;
@@ -6201,6 +6204,7 @@ export namespace proto {
         newsletter?: (proto.ContextInfo.IForwardedNewsletterMessageInfo|null);
         embeddedAction?: (boolean|null);
         tapAction?: (proto.ITapLinkAction|null);
+        pixKey?: (proto.IStatusPixKey|null);
     }
 
     class InteractiveAnnotation implements IInteractiveAnnotation {
@@ -6213,7 +6217,8 @@ export namespace proto {
         public newsletter?: (proto.ContextInfo.IForwardedNewsletterMessageInfo|null);
         public embeddedAction?: (boolean|null);
         public tapAction?: (proto.ITapLinkAction|null);
-        public action?: ("location"|"newsletter"|"embeddedAction"|"tapAction");
+        public pixKey?: (proto.IStatusPixKey|null);
+        public action?: ("location"|"newsletter"|"embeddedAction"|"tapAction"|"pixKey");
         public static create(properties?: proto.IInteractiveAnnotation): proto.InteractiveAnnotation;
         public static encode(m: proto.IInteractiveAnnotation, w?: $protobuf.Writer): $protobuf.Writer;
         public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.InteractiveAnnotation;
@@ -14298,6 +14303,38 @@ export namespace proto {
         public static toObject(m: proto.StatusPSA, o?: $protobuf.IConversionOptions): { [k: string]: any };
         public toJSON(): { [k: string]: any };
         public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface IStatusPixKey {
+        key?: (string|null);
+        keyType?: (proto.StatusPixKey.KeyType|null);
+        displayName?: (string|null);
+    }
+
+    class StatusPixKey implements IStatusPixKey {
+        constructor(p?: proto.IStatusPixKey);
+        public key?: (string|null);
+        public keyType?: (proto.StatusPixKey.KeyType|null);
+        public displayName?: (string|null);
+        public static create(properties?: proto.IStatusPixKey): proto.StatusPixKey;
+        public static encode(m: proto.IStatusPixKey, w?: $protobuf.Writer): $protobuf.Writer;
+        public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.StatusPixKey;
+        public static fromObject(d: { [k: string]: any }): proto.StatusPixKey;
+        public static toObject(m: proto.StatusPixKey, o?: $protobuf.IConversionOptions): { [k: string]: any };
+        public toJSON(): { [k: string]: any };
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    namespace StatusPixKey {
+
+        enum KeyType {
+            UNKNOWN = 0,
+            CPF = 1,
+            CNPJ = 2,
+            PHONE = 3,
+            EMAIL = 4,
+            EVP = 5
+        }
     }
 
     interface IStickerMetadata {
