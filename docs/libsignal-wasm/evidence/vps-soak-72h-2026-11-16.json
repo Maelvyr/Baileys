@@ -22,6 +22,6 @@
   "notes": [
     "The previous process was restarted by a libc unattended upgrade on 2026-11-13 at 06:04; this run is the post-restart 72h run.",
     "All four closes in the completed run were ws close 1006; no stream 503 in this run.",
-    "Panel remains active; the soak unit is enabled and would start again on reboot."
+    "Panel remains active; the soak unit was disabled after completion so it will not start a new run on reboot."
   ]
 }
