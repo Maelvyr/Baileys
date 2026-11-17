@@ -13,6 +13,12 @@ describe('websocket close', () => {
 		state.creds.me = { id: '1234567890:1@s.whatsapp.net', name: 'Test User' }
 
 		const sock = makeWASocket({ ...DEFAULT_CONNECTION_CONFIG, auth: state })
+		expect(sock.connectionHealth()).toMatchObject({
+			connected: false,
+			consecutivePingFailures: 0,
+			pingsSent: 0,
+			pingsFailed: 0
+		})
 		const updates: any[] = []
 		sock.ev.on('connection.update', update => updates.push(update))
 
@@ -24,7 +30,9 @@ describe('websocket close', () => {
 		}
 
 		const closed = updates.find(update => update.connection === 'close')
-		expect(closed?.lastDisconnect?.error?.message).toContain('ws close 1006')
+		const error = closed?.lastDisconnect?.error as any
+		expect(error?.message).toContain('ws close 1006')
+		expect(error?.data).toMatchObject({ closeCode: 1006, wasClean: false })
 
 		await sock.end(new Error('Test completed'))
 		await clear()
