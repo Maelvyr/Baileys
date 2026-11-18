@@ -4678,6 +4678,7 @@ export namespace proto {
         hostWriteMutationSupport?: (proto.DeviceCapabilities.IHostWriteMutationSupport|null);
         bizAiWebOnboarding?: (proto.DeviceCapabilities.IBizAiWebOnboarding|null);
         phoneNumberSharing?: (proto.DeviceCapabilities.IPhoneNumberSharing|null);
+        recentConversationsOnDemand?: (proto.DeviceCapabilities.IRecentConversationsOnDemand|null);
     }
 
     class DeviceCapabilities implements IDeviceCapabilities {
@@ -4696,6 +4697,7 @@ export namespace proto {
         public hostWriteMutationSupport?: (proto.DeviceCapabilities.IHostWriteMutationSupport|null);
         public bizAiWebOnboarding?: (proto.DeviceCapabilities.IBizAiWebOnboarding|null);
         public phoneNumberSharing?: (proto.DeviceCapabilities.IPhoneNumberSharing|null);
+        public recentConversationsOnDemand?: (proto.DeviceCapabilities.IRecentConversationsOnDemand|null);
         public static create(properties?: proto.IDeviceCapabilities): proto.DeviceCapabilities;
         public static encode(m: proto.IDeviceCapabilities, w?: $protobuf.Writer): $protobuf.Writer;
         public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.DeviceCapabilities;
@@ -4900,6 +4902,22 @@ export namespace proto {
             public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.DeviceCapabilities.PhoneNumberSharing;
             public static fromObject(d: { [k: string]: any }): proto.DeviceCapabilities.PhoneNumberSharing;
             public static toObject(m: proto.DeviceCapabilities.PhoneNumberSharing, o?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        interface IRecentConversationsOnDemand {
+            supported?: (boolean|null);
+        }
+
+        class RecentConversationsOnDemand implements IRecentConversationsOnDemand {
+            constructor(p?: proto.DeviceCapabilities.IRecentConversationsOnDemand);
+            public supported?: (boolean|null);
+            public static create(properties?: proto.DeviceCapabilities.IRecentConversationsOnDemand): proto.DeviceCapabilities.RecentConversationsOnDemand;
+            public static encode(m: proto.DeviceCapabilities.IRecentConversationsOnDemand, w?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.DeviceCapabilities.RecentConversationsOnDemand;
+            public static fromObject(d: { [k: string]: any }): proto.DeviceCapabilities.RecentConversationsOnDemand;
+            public static toObject(m: proto.DeviceCapabilities.RecentConversationsOnDemand, o?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
@@ -13768,11 +13786,13 @@ export namespace proto {
 
     interface IServerErrorReceipt {
         stanzaId?: (string|null);
+        keepMediaKey?: (boolean|null);
     }
 
     class ServerErrorReceipt implements IServerErrorReceipt {
         constructor(p?: proto.IServerErrorReceipt);
         public stanzaId?: (string|null);
+        public keepMediaKey?: (boolean|null);
         public static create(properties?: proto.IServerErrorReceipt): proto.ServerErrorReceipt;
         public static encode(m: proto.IServerErrorReceipt, w?: $protobuf.Writer): $protobuf.Writer;
         public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.ServerErrorReceipt;
