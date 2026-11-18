@@ -29,7 +29,7 @@
     "rotation": "10 MB x 20 files",
     "path": "/var/log/baileys-soak/capture.pcap*",
     "payload": false,
-    "watcher": "baileys-1006-watch.service",
+    "watcher": "baileys-soak-watch.service",
     "analysis": "network/summary.txt + tcp-close-flags.txt"
   },
   "initialMetrics": {
