@@ -37132,6 +37132,7 @@ export const proto = $root.proto = (() => {
         DeviceCapabilities.prototype.hostWriteMutationSupport = null;
         DeviceCapabilities.prototype.bizAiWebOnboarding = null;
         DeviceCapabilities.prototype.phoneNumberSharing = null;
+        DeviceCapabilities.prototype.recentConversationsOnDemand = null;
 
         let $oneOfFields;
 
@@ -37219,6 +37220,12 @@ export const proto = $root.proto = (() => {
             set: $util.oneOfSetter($oneOfFields)
         });
 
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(DeviceCapabilities.prototype, "_recentConversationsOnDemand", {
+            get: $util.oneOfGetter($oneOfFields = ["recentConversationsOnDemand"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
         DeviceCapabilities.create = function create(properties) {
             return new DeviceCapabilities(properties);
         };
@@ -37258,6 +37265,8 @@ export const proto = $root.proto = (() => {
                 $root.proto.DeviceCapabilities.BizAiWebOnboarding.encode(m.bizAiWebOnboarding, w.uint32(106).fork(), q + 1).ldelim();
             if (m.phoneNumberSharing != null && Object.hasOwnProperty.call(m, "phoneNumberSharing"))
                 $root.proto.DeviceCapabilities.PhoneNumberSharing.encode(m.phoneNumberSharing, w.uint32(114).fork(), q + 1).ldelim();
+            if (m.recentConversationsOnDemand != null && Object.hasOwnProperty.call(m, "recentConversationsOnDemand"))
+                $root.proto.DeviceCapabilities.RecentConversationsOnDemand.encode(m.recentConversationsOnDemand, w.uint32(122).fork(), q + 1).ldelim();
             return w;
         };
 
@@ -37338,6 +37347,10 @@ export const proto = $root.proto = (() => {
                     }
                 case 14: {
                         m.phoneNumberSharing = $root.proto.DeviceCapabilities.PhoneNumberSharing.decode(r, r.uint32(), undefined, n + 1);
+                        break;
+                    }
+                case 15: {
+                        m.recentConversationsOnDemand = $root.proto.DeviceCapabilities.RecentConversationsOnDemand.decode(r, r.uint32(), undefined, n + 1);
                         break;
                     }
                 default:
@@ -37463,6 +37476,11 @@ export const proto = $root.proto = (() => {
                     throw TypeError(".proto.DeviceCapabilities.phoneNumberSharing: object expected");
                 m.phoneNumberSharing = $root.proto.DeviceCapabilities.PhoneNumberSharing.fromObject(d.phoneNumberSharing, n + 1);
             }
+            if (d.recentConversationsOnDemand != null) {
+                if (!$util.isObject(d.recentConversationsOnDemand))
+                    throw TypeError(".proto.DeviceCapabilities.recentConversationsOnDemand: object expected");
+                m.recentConversationsOnDemand = $root.proto.DeviceCapabilities.RecentConversationsOnDemand.fromObject(d.recentConversationsOnDemand, n + 1);
+            }
             return m;
         };
 
@@ -37543,6 +37561,11 @@ export const proto = $root.proto = (() => {
                 d.phoneNumberSharing = $root.proto.DeviceCapabilities.PhoneNumberSharing.toObject(m.phoneNumberSharing, o, q + 1);
                 if (o.oneofs)
                     d._phoneNumberSharing = "phoneNumberSharing";
+            }
+            if (m.recentConversationsOnDemand != null && Object.hasOwnProperty.call(m, "recentConversationsOnDemand")) {
+                d.recentConversationsOnDemand = $root.proto.DeviceCapabilities.RecentConversationsOnDemand.toObject(m.recentConversationsOnDemand, o, q + 1);
+                if (o.oneofs)
+                    d._recentConversationsOnDemand = "recentConversationsOnDemand";
             }
             return d;
         };
@@ -39017,6 +39040,127 @@ export const proto = $root.proto = (() => {
             };
 
             return PhoneNumberSharing;
+        })();
+
+        DeviceCapabilities.RecentConversationsOnDemand = (function() {
+
+            function RecentConversationsOnDemand(p) {
+                if (p)
+                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                        if (p[ks[i]] != null && ks[i] !== "__proto__")
+                            this[ks[i]] = p[ks[i]];
+            }
+
+            RecentConversationsOnDemand.prototype.supported = null;
+
+            let $oneOfFields;
+
+            // Virtual OneOf for proto3 optional field
+            Object.defineProperty(RecentConversationsOnDemand.prototype, "_supported", {
+                get: $util.oneOfGetter($oneOfFields = ["supported"]),
+                set: $util.oneOfSetter($oneOfFields)
+            });
+
+            RecentConversationsOnDemand.create = function create(properties) {
+                return new RecentConversationsOnDemand(properties);
+            };
+
+            RecentConversationsOnDemand.encode = function encode(m, w, q) {
+                if (!w)
+                    w = $Writer.create();
+                if (q === undefined)
+                    q = 0;
+                if (q > $util.recursionLimit)
+                    throw Error("max depth exceeded");
+                if (m.supported != null && Object.hasOwnProperty.call(m, "supported"))
+                    w.uint32(8).bool(m.supported);
+                return w;
+            };
+
+            RecentConversationsOnDemand.decode = function decode(r, l, e, n) {
+                if (!(r instanceof $Reader))
+                    r = $Reader.create(r);
+                if (n === undefined)
+                    n = 0;
+                if (n > $Reader.recursionLimit)
+                    throw Error("maximum nesting depth exceeded");
+                var c, m;
+                if (l === undefined)
+                    c = r.len;
+                else {
+                    c = r.pos + l;
+                    if (c > r.len)
+                        throw RangeError("index out of range");
+                    l = r.len;
+                    r.len = c;
+                }
+                m = new $root.proto.DeviceCapabilities.RecentConversationsOnDemand();
+                while (r.pos < c) {
+                    var t = r.uint32();
+                    if (t === e)
+                        break;
+                    switch (t >>> 3) {
+                    case 1: {
+                            m.supported = r.bool();
+                            break;
+                        }
+                    default:
+                        r.skipType(t & 7, n);
+                        break;
+                    }
+                }
+                if (l !== undefined) {
+                    if (r.pos !== c)
+                        throw RangeError("index out of range");
+                    r.len = l;
+                }
+                return m;
+            };
+
+            RecentConversationsOnDemand.fromObject = function fromObject(d, n) {
+                if (d instanceof $root.proto.DeviceCapabilities.RecentConversationsOnDemand)
+                    return d;
+                if (!$util.isObject(d))
+                    throw TypeError(".proto.DeviceCapabilities.RecentConversationsOnDemand: object expected");
+                if (n === undefined)
+                    n = 0;
+                if (n > $util.recursionLimit)
+                    throw Error("maximum nesting depth exceeded");
+                var m = new $root.proto.DeviceCapabilities.RecentConversationsOnDemand();
+                if (d.supported != null) {
+                    m.supported = Boolean(d.supported);
+                }
+                return m;
+            };
+
+            RecentConversationsOnDemand.toObject = function toObject(m, o, q) {
+                if (!o)
+                    o = {};
+                if (q === undefined)
+                    q = 0;
+                if (q > $util.recursionLimit)
+                    throw Error("max depth exceeded");
+                var d = {};
+                if (m.supported != null && Object.hasOwnProperty.call(m, "supported")) {
+                    d.supported = m.supported;
+                    if (o.oneofs)
+                        d._supported = "supported";
+                }
+                return d;
+            };
+
+            RecentConversationsOnDemand.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            RecentConversationsOnDemand.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/proto.DeviceCapabilities.RecentConversationsOnDemand";
+            };
+
+            return RecentConversationsOnDemand;
         })();
 
         DeviceCapabilities.ReverseHistorySync = (function() {
@@ -112551,12 +112695,19 @@ export const proto = $root.proto = (() => {
         }
 
         ServerErrorReceipt.prototype.stanzaId = null;
+        ServerErrorReceipt.prototype.keepMediaKey = null;
 
         let $oneOfFields;
 
         // Virtual OneOf for proto3 optional field
         Object.defineProperty(ServerErrorReceipt.prototype, "_stanzaId", {
             get: $util.oneOfGetter($oneOfFields = ["stanzaId"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(ServerErrorReceipt.prototype, "_keepMediaKey", {
+            get: $util.oneOfGetter($oneOfFields = ["keepMediaKey"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -112573,6 +112724,8 @@ export const proto = $root.proto = (() => {
                 throw Error("max depth exceeded");
             if (m.stanzaId != null && Object.hasOwnProperty.call(m, "stanzaId"))
                 w.uint32(10).string(m.stanzaId);
+            if (m.keepMediaKey != null && Object.hasOwnProperty.call(m, "keepMediaKey"))
+                w.uint32(16).bool(m.keepMediaKey);
             return w;
         };
 
@@ -112603,6 +112756,10 @@ export const proto = $root.proto = (() => {
                         m.stanzaId = r.string();
                         break;
                     }
+                case 2: {
+                        m.keepMediaKey = r.bool();
+                        break;
+                    }
                 default:
                     r.skipType(t & 7, n);
                     break;
@@ -112629,6 +112786,9 @@ export const proto = $root.proto = (() => {
             if (d.stanzaId != null) {
                 m.stanzaId = String(d.stanzaId);
             }
+            if (d.keepMediaKey != null) {
+                m.keepMediaKey = Boolean(d.keepMediaKey);
+            }
             return m;
         };
 
@@ -112644,6 +112804,11 @@ export const proto = $root.proto = (() => {
                 d.stanzaId = m.stanzaId;
                 if (o.oneofs)
                     d._stanzaId = "stanzaId";
+            }
+            if (m.keepMediaKey != null && Object.hasOwnProperty.call(m, "keepMediaKey")) {
+                d.keepMediaKey = m.keepMediaKey;
+                if (o.oneofs)
+                    d._keepMediaKey = "keepMediaKey";
             }
             return d;
         };
