@@ -1307,7 +1307,8 @@ export namespace proto {
             AI_RICH_RESPONSE_READ_ALOUD_ENABLED = 87,
             AI_RICH_RESPONSE_ITEM_LISTS_ENABLED = 88,
             RICH_RESPONSE_SIDE_BY_SIDE_BUFFER_BOTH = 89,
-            AI_MUSE_JARVIS_ENVELOPE_GZIP_ENABLED = 90
+            AI_MUSE_JARVIS_ENVELOPE_GZIP_ENABLED = 90,
+            AI_RICH_RESPONSE_INLINE_MEDIA_LIGHTBOX_ENABLED = 91
         }
     }
 
@@ -8472,11 +8473,13 @@ export namespace proto {
 
         interface IInitialSecurityNotificationSettingSync {
             securityNotificationEnabled?: (boolean|null);
+            initialAppTheme?: (number|null);
         }
 
         class InitialSecurityNotificationSettingSync implements IInitialSecurityNotificationSettingSync {
             constructor(p?: proto.Message.IInitialSecurityNotificationSettingSync);
             public securityNotificationEnabled?: (boolean|null);
+            public initialAppTheme?: (number|null);
             public static create(properties?: proto.Message.IInitialSecurityNotificationSettingSync): proto.Message.InitialSecurityNotificationSettingSync;
             public static encode(m: proto.Message.IInitialSecurityNotificationSettingSync, w?: $protobuf.Writer): $protobuf.Writer;
             public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.Message.InitialSecurityNotificationSettingSync;
@@ -10584,12 +10587,14 @@ export namespace proto {
             interface IOption {
                 optionName?: (string|null);
                 optionHash?: (string|null);
+                optionDatetime?: (number|Long|null);
             }
 
             class Option implements IOption {
                 constructor(p?: proto.Message.PollCreationMessage.IOption);
                 public optionName?: (string|null);
                 public optionHash?: (string|null);
+                public optionDatetime?: (number|Long|null);
                 public static create(properties?: proto.Message.PollCreationMessage.IOption): proto.Message.PollCreationMessage.Option;
                 public static encode(m: proto.Message.PollCreationMessage.IOption, w?: $protobuf.Writer): $protobuf.Writer;
                 public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.Message.PollCreationMessage.Option;
@@ -10847,6 +10852,7 @@ export namespace proto {
             groupRootKeyRequest?: (proto.IGroupRootKeyRequest|null);
             membershipFormKeyFingerprintVerification?: (proto.IMembershipFormKeyFingerprintVerification|null);
             groupRootKeyShare?: (proto.IGroupRootKeyShare|null);
+            messageEditDisplayType?: (proto.Message.ProtocolMessage.MessageEditDisplayType|null);
         }
 
         class ProtocolMessage implements IProtocolMessage {
@@ -10888,6 +10894,7 @@ export namespace proto {
             public groupRootKeyRequest?: (proto.IGroupRootKeyRequest|null);
             public membershipFormKeyFingerprintVerification?: (proto.IMembershipFormKeyFingerprintVerification|null);
             public groupRootKeyShare?: (proto.IGroupRootKeyShare|null);
+            public messageEditDisplayType?: (proto.Message.ProtocolMessage.MessageEditDisplayType|null);
             public static create(properties?: proto.Message.IProtocolMessage): proto.Message.ProtocolMessage;
             public static encode(m: proto.Message.IProtocolMessage, w?: $protobuf.Writer): $protobuf.Writer;
             public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.Message.ProtocolMessage;
@@ -10898,6 +10905,11 @@ export namespace proto {
         }
 
         namespace ProtocolMessage {
+
+            enum MessageEditDisplayType {
+                DEFAULT = 0,
+                LINK_PREVIEW_ONLY = 1
+            }
 
             enum Type {
                 REVOKE = 0,
@@ -12109,7 +12121,6 @@ export namespace proto {
         associatedPrimaryIdentityKey?: (Uint8Array|null);
         teeContextAnchorMessageId?: (string|null);
         acp2Setting?: (proto.IACP2Setting|null);
-        lightE2Ee?: (boolean|null);
     }
 
     class MessageContextInfo implements IMessageContextInfo {
@@ -12135,7 +12146,6 @@ export namespace proto {
         public associatedPrimaryIdentityKey?: (Uint8Array|null);
         public teeContextAnchorMessageId?: (string|null);
         public acp2Setting?: (proto.IACP2Setting|null);
-        public lightE2Ee?: (boolean|null);
         public static create(properties?: proto.IMessageContextInfo): proto.MessageContextInfo;
         public static encode(m: proto.IMessageContextInfo, w?: $protobuf.Writer): $protobuf.Writer;
         public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.MessageContextInfo;
@@ -15085,6 +15095,7 @@ export namespace proto {
             pnJid?: (string|null);
             username?: (string|null);
             birthday?: (string|null);
+            nonE2EeType?: (number|null);
         }
 
         class ContactAction implements IContactAction {
@@ -15096,6 +15107,7 @@ export namespace proto {
             public pnJid?: (string|null);
             public username?: (string|null);
             public birthday?: (string|null);
+            public nonE2EeType?: (number|null);
             public static create(properties?: proto.SyncActionValue.IContactAction): proto.SyncActionValue.ContactAction;
             public static encode(m: proto.SyncActionValue.IContactAction, w?: $protobuf.Writer): $protobuf.Writer;
             public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.SyncActionValue.ContactAction;
@@ -15562,6 +15574,7 @@ export namespace proto {
             firstName?: (string|null);
             username?: (string|null);
             birthday?: (string|null);
+            nonE2EeType?: (number|null);
         }
 
         class LidContactAction implements ILidContactAction {
@@ -15570,6 +15583,7 @@ export namespace proto {
             public firstName?: (string|null);
             public username?: (string|null);
             public birthday?: (string|null);
+            public nonE2EeType?: (number|null);
             public static create(properties?: proto.SyncActionValue.ILidContactAction): proto.SyncActionValue.LidContactAction;
             public static encode(m: proto.SyncActionValue.ILidContactAction, w?: $protobuf.Writer): $protobuf.Writer;
             public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.SyncActionValue.LidContactAction;
@@ -17872,6 +17886,7 @@ export namespace proto {
             SPLIT_PAYMENT_MARKED_AS_PAID = 289,
             POLL_OPTIONS_REMOVED = 290,
             POLL_ADDED_OPTION_REMOVED = 291,
+            POLL_OPTION_ADDED = 292,
             GROUP_CUSTOM_REACTIONS = 293
         }
     }
