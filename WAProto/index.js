@@ -6292,12 +6292,19 @@ export const proto = $root.proto = (() => {
         }
 
         AIRichResponseUnifiedResponse.prototype.data = null;
+        AIRichResponseUnifiedResponse.prototype.gzipData = null;
 
         let $oneOfFields;
 
         // Virtual OneOf for proto3 optional field
         Object.defineProperty(AIRichResponseUnifiedResponse.prototype, "_data", {
             get: $util.oneOfGetter($oneOfFields = ["data"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(AIRichResponseUnifiedResponse.prototype, "_gzipData", {
+            get: $util.oneOfGetter($oneOfFields = ["gzipData"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -6314,6 +6321,8 @@ export const proto = $root.proto = (() => {
                 throw Error("max depth exceeded");
             if (m.data != null && Object.hasOwnProperty.call(m, "data"))
                 w.uint32(10).bytes(m.data);
+            if (m.gzipData != null && Object.hasOwnProperty.call(m, "gzipData"))
+                w.uint32(18).bytes(m.gzipData);
             return w;
         };
 
@@ -6342,6 +6351,10 @@ export const proto = $root.proto = (() => {
                 switch (t >>> 3) {
                 case 1: {
                         m.data = r.bytes();
+                        break;
+                    }
+                case 2: {
+                        m.gzipData = r.bytes();
                         break;
                     }
                 default:
@@ -6373,6 +6386,12 @@ export const proto = $root.proto = (() => {
                 else if (d.data.length >= 0)
                     m.data = d.data;
             }
+            if (d.gzipData != null) {
+                if (typeof d.gzipData === "string")
+                    $util.base64.decode(d.gzipData, m.gzipData = $util.newBuffer($util.base64.length(d.gzipData)), 0);
+                else if (d.gzipData.length >= 0)
+                    m.gzipData = d.gzipData;
+            }
             return m;
         };
 
@@ -6388,6 +6407,11 @@ export const proto = $root.proto = (() => {
                 d.data = o.bytes === String ? $util.base64.encode(m.data, 0, m.data.length) : o.bytes === Array ? Array.prototype.slice.call(m.data) : m.data;
                 if (o.oneofs)
                     d._data = "data";
+            }
+            if (m.gzipData != null && Object.hasOwnProperty.call(m, "gzipData")) {
+                d.gzipData = o.bytes === String ? $util.base64.encode(m.gzipData, 0, m.gzipData.length) : o.bytes === Array ? Array.prototype.slice.call(m.gzipData) : m.gzipData;
+                if (o.oneofs)
+                    d._gzipData = "gzipData";
             }
             return d;
         };
@@ -9827,6 +9851,10 @@ export const proto = $root.proto = (() => {
                     case 91:
                         m.capabilities[i] = 91;
                         break;
+                    case "AI_MUSE_JARVIS_PAYLOAD_GZIP_ENABLED":
+                    case 93:
+                        m.capabilities[i] = 93;
+                        break;
                     }
                 }
             }
@@ -9958,6 +9986,7 @@ export const proto = $root.proto = (() => {
             values[valuesById[89] = "RICH_RESPONSE_SIDE_BY_SIDE_BUFFER_BOTH"] = 89;
             values[valuesById[90] = "AI_MUSE_JARVIS_ENVELOPE_GZIP_ENABLED"] = 90;
             values[valuesById[91] = "AI_RICH_RESPONSE_INLINE_MEDIA_LIGHTBOX_ENABLED"] = 91;
+            values[valuesById[93] = "AI_MUSE_JARVIS_PAYLOAD_GZIP_ENABLED"] = 93;
             return values;
         })();
 
@@ -37138,6 +37167,7 @@ export const proto = $root.proto = (() => {
         DeviceCapabilities.prototype.bizAiWebOnboarding = null;
         DeviceCapabilities.prototype.phoneNumberSharing = null;
         DeviceCapabilities.prototype.recentConversationsOnDemand = null;
+        DeviceCapabilities.prototype.aiMuseJarvisGzip = null;
 
         let $oneOfFields;
 
@@ -37231,6 +37261,12 @@ export const proto = $root.proto = (() => {
             set: $util.oneOfSetter($oneOfFields)
         });
 
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(DeviceCapabilities.prototype, "_aiMuseJarvisGzip", {
+            get: $util.oneOfGetter($oneOfFields = ["aiMuseJarvisGzip"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
         DeviceCapabilities.create = function create(properties) {
             return new DeviceCapabilities(properties);
         };
@@ -37272,6 +37308,8 @@ export const proto = $root.proto = (() => {
                 $root.proto.DeviceCapabilities.PhoneNumberSharing.encode(m.phoneNumberSharing, w.uint32(114).fork(), q + 1).ldelim();
             if (m.recentConversationsOnDemand != null && Object.hasOwnProperty.call(m, "recentConversationsOnDemand"))
                 $root.proto.DeviceCapabilities.RecentConversationsOnDemand.encode(m.recentConversationsOnDemand, w.uint32(122).fork(), q + 1).ldelim();
+            if (m.aiMuseJarvisGzip != null && Object.hasOwnProperty.call(m, "aiMuseJarvisGzip"))
+                $root.proto.DeviceCapabilities.AiMuseJarvisGzip.encode(m.aiMuseJarvisGzip, w.uint32(130).fork(), q + 1).ldelim();
             return w;
         };
 
@@ -37356,6 +37394,10 @@ export const proto = $root.proto = (() => {
                     }
                 case 15: {
                         m.recentConversationsOnDemand = $root.proto.DeviceCapabilities.RecentConversationsOnDemand.decode(r, r.uint32(), undefined, n + 1);
+                        break;
+                    }
+                case 16: {
+                        m.aiMuseJarvisGzip = $root.proto.DeviceCapabilities.AiMuseJarvisGzip.decode(r, r.uint32(), undefined, n + 1);
                         break;
                     }
                 default:
@@ -37486,6 +37528,11 @@ export const proto = $root.proto = (() => {
                     throw TypeError(".proto.DeviceCapabilities.recentConversationsOnDemand: object expected");
                 m.recentConversationsOnDemand = $root.proto.DeviceCapabilities.RecentConversationsOnDemand.fromObject(d.recentConversationsOnDemand, n + 1);
             }
+            if (d.aiMuseJarvisGzip != null) {
+                if (!$util.isObject(d.aiMuseJarvisGzip))
+                    throw TypeError(".proto.DeviceCapabilities.aiMuseJarvisGzip: object expected");
+                m.aiMuseJarvisGzip = $root.proto.DeviceCapabilities.AiMuseJarvisGzip.fromObject(d.aiMuseJarvisGzip, n + 1);
+            }
             return m;
         };
 
@@ -37571,6 +37618,11 @@ export const proto = $root.proto = (() => {
                 d.recentConversationsOnDemand = $root.proto.DeviceCapabilities.RecentConversationsOnDemand.toObject(m.recentConversationsOnDemand, o, q + 1);
                 if (o.oneofs)
                     d._recentConversationsOnDemand = "recentConversationsOnDemand";
+            }
+            if (m.aiMuseJarvisGzip != null && Object.hasOwnProperty.call(m, "aiMuseJarvisGzip")) {
+                d.aiMuseJarvisGzip = $root.proto.DeviceCapabilities.AiMuseJarvisGzip.toObject(m.aiMuseJarvisGzip, o, q + 1);
+                if (o.oneofs)
+                    d._aiMuseJarvisGzip = "aiMuseJarvisGzip";
             }
             return d;
         };
@@ -37738,6 +37790,127 @@ export const proto = $root.proto = (() => {
             };
 
             return AiFbidMigration;
+        })();
+
+        DeviceCapabilities.AiMuseJarvisGzip = (function() {
+
+            function AiMuseJarvisGzip(p) {
+                if (p)
+                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                        if (p[ks[i]] != null && ks[i] !== "__proto__")
+                            this[ks[i]] = p[ks[i]];
+            }
+
+            AiMuseJarvisGzip.prototype.supportVersion = null;
+
+            let $oneOfFields;
+
+            // Virtual OneOf for proto3 optional field
+            Object.defineProperty(AiMuseJarvisGzip.prototype, "_supportVersion", {
+                get: $util.oneOfGetter($oneOfFields = ["supportVersion"]),
+                set: $util.oneOfSetter($oneOfFields)
+            });
+
+            AiMuseJarvisGzip.create = function create(properties) {
+                return new AiMuseJarvisGzip(properties);
+            };
+
+            AiMuseJarvisGzip.encode = function encode(m, w, q) {
+                if (!w)
+                    w = $Writer.create();
+                if (q === undefined)
+                    q = 0;
+                if (q > $util.recursionLimit)
+                    throw Error("max depth exceeded");
+                if (m.supportVersion != null && Object.hasOwnProperty.call(m, "supportVersion"))
+                    w.uint32(8).uint32(m.supportVersion);
+                return w;
+            };
+
+            AiMuseJarvisGzip.decode = function decode(r, l, e, n) {
+                if (!(r instanceof $Reader))
+                    r = $Reader.create(r);
+                if (n === undefined)
+                    n = 0;
+                if (n > $Reader.recursionLimit)
+                    throw Error("maximum nesting depth exceeded");
+                var c, m;
+                if (l === undefined)
+                    c = r.len;
+                else {
+                    c = r.pos + l;
+                    if (c > r.len)
+                        throw RangeError("index out of range");
+                    l = r.len;
+                    r.len = c;
+                }
+                m = new $root.proto.DeviceCapabilities.AiMuseJarvisGzip();
+                while (r.pos < c) {
+                    var t = r.uint32();
+                    if (t === e)
+                        break;
+                    switch (t >>> 3) {
+                    case 1: {
+                            m.supportVersion = r.uint32();
+                            break;
+                        }
+                    default:
+                        r.skipType(t & 7, n);
+                        break;
+                    }
+                }
+                if (l !== undefined) {
+                    if (r.pos !== c)
+                        throw RangeError("index out of range");
+                    r.len = l;
+                }
+                return m;
+            };
+
+            AiMuseJarvisGzip.fromObject = function fromObject(d, n) {
+                if (d instanceof $root.proto.DeviceCapabilities.AiMuseJarvisGzip)
+                    return d;
+                if (!$util.isObject(d))
+                    throw TypeError(".proto.DeviceCapabilities.AiMuseJarvisGzip: object expected");
+                if (n === undefined)
+                    n = 0;
+                if (n > $util.recursionLimit)
+                    throw Error("maximum nesting depth exceeded");
+                var m = new $root.proto.DeviceCapabilities.AiMuseJarvisGzip();
+                if (d.supportVersion != null) {
+                    m.supportVersion = d.supportVersion >>> 0;
+                }
+                return m;
+            };
+
+            AiMuseJarvisGzip.toObject = function toObject(m, o, q) {
+                if (!o)
+                    o = {};
+                if (q === undefined)
+                    q = 0;
+                if (q > $util.recursionLimit)
+                    throw Error("max depth exceeded");
+                var d = {};
+                if (m.supportVersion != null && Object.hasOwnProperty.call(m, "supportVersion")) {
+                    d.supportVersion = m.supportVersion;
+                    if (o.oneofs)
+                        d._supportVersion = "supportVersion";
+                }
+                return d;
+            };
+
+            AiMuseJarvisGzip.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            AiMuseJarvisGzip.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/proto.DeviceCapabilities.AiMuseJarvisGzip";
+            };
+
+            return AiMuseJarvisGzip;
         })();
 
         DeviceCapabilities.AiThread = (function() {
@@ -103728,6 +103901,7 @@ export const proto = $root.proto = (() => {
         values[valuesById[99] = "COMMUNITY_NESTING_STATE_ACTION"] = 99;
         values[valuesById[100] = "SHARED_DEVICE_SECRET_ACTION"] = 100;
         values[valuesById[101] = "HATCH_CVM_SECRET_ACTION"] = 101;
+        values[valuesById[102] = "BUSINESS_FOLDER_CHAT_PREFERENCE_ACTION"] = 102;
         values[valuesById[10001] = "SHARE_OWN_PN"] = 10001;
         values[valuesById[10002] = "BUSINESS_BROADCAST_ACTION"] = 10002;
         values[valuesById[10003] = "AI_THREAD_DELETE_ACTION"] = 10003;
@@ -117909,6 +118083,7 @@ export const proto = $root.proto = (() => {
         SyncActionValue.prototype.communityNestingStateAction = null;
         SyncActionValue.prototype.sharedDeviceSecretAction = null;
         SyncActionValue.prototype.hatchCvmSecretAction = null;
+        SyncActionValue.prototype.businessFolderChatPreferenceAction = null;
 
         let $oneOfFields;
 
@@ -118464,6 +118639,12 @@ export const proto = $root.proto = (() => {
             set: $util.oneOfSetter($oneOfFields)
         });
 
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(SyncActionValue.prototype, "_businessFolderChatPreferenceAction", {
+            get: $util.oneOfGetter($oneOfFields = ["businessFolderChatPreferenceAction"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
         SyncActionValue.create = function create(properties) {
             return new SyncActionValue(properties);
         };
@@ -118659,6 +118840,8 @@ export const proto = $root.proto = (() => {
                 $root.proto.SyncActionValue.SharedDeviceSecretAction.encode(m.sharedDeviceSecretAction, w.uint32(802).fork(), q + 1).ldelim();
             if (m.hatchCvmSecretAction != null && Object.hasOwnProperty.call(m, "hatchCvmSecretAction"))
                 $root.proto.SyncActionValue.HatchCVMSecretAction.encode(m.hatchCvmSecretAction, w.uint32(810).fork(), q + 1).ldelim();
+            if (m.businessFolderChatPreferenceAction != null && Object.hasOwnProperty.call(m, "businessFolderChatPreferenceAction"))
+                $root.proto.SyncActionValue.BusinessFolderChatPreferenceAction.encode(m.businessFolderChatPreferenceAction, w.uint32(818).fork(), q + 1).ldelim();
             return w;
         };
 
@@ -119051,6 +119234,10 @@ export const proto = $root.proto = (() => {
                     }
                 case 101: {
                         m.hatchCvmSecretAction = $root.proto.SyncActionValue.HatchCVMSecretAction.decode(r, r.uint32(), undefined, n + 1);
+                        break;
+                    }
+                case 102: {
+                        m.businessFolderChatPreferenceAction = $root.proto.SyncActionValue.BusinessFolderChatPreferenceAction.decode(r, r.uint32(), undefined, n + 1);
                         break;
                     }
                 default:
@@ -119541,6 +119728,11 @@ export const proto = $root.proto = (() => {
                     throw TypeError(".proto.SyncActionValue.hatchCvmSecretAction: object expected");
                 m.hatchCvmSecretAction = $root.proto.SyncActionValue.HatchCVMSecretAction.fromObject(d.hatchCvmSecretAction, n + 1);
             }
+            if (d.businessFolderChatPreferenceAction != null) {
+                if (!$util.isObject(d.businessFolderChatPreferenceAction))
+                    throw TypeError(".proto.SyncActionValue.businessFolderChatPreferenceAction: object expected");
+                m.businessFolderChatPreferenceAction = $root.proto.SyncActionValue.BusinessFolderChatPreferenceAction.fromObject(d.businessFolderChatPreferenceAction, n + 1);
+            }
             return m;
         };
 
@@ -120016,6 +120208,11 @@ export const proto = $root.proto = (() => {
                 d.hatchCvmSecretAction = $root.proto.SyncActionValue.HatchCVMSecretAction.toObject(m.hatchCvmSecretAction, o, q + 1);
                 if (o.oneofs)
                     d._hatchCvmSecretAction = "hatchCvmSecretAction";
+            }
+            if (m.businessFolderChatPreferenceAction != null && Object.hasOwnProperty.call(m, "businessFolderChatPreferenceAction")) {
+                d.businessFolderChatPreferenceAction = $root.proto.SyncActionValue.BusinessFolderChatPreferenceAction.toObject(m.businessFolderChatPreferenceAction, o, q + 1);
+                if (o.oneofs)
+                    d._businessFolderChatPreferenceAction = "businessFolderChatPreferenceAction";
             }
             return d;
         };
@@ -122752,6 +122949,157 @@ export const proto = $root.proto = (() => {
             };
 
             return BusinessFolderActivationAction;
+        })();
+
+        SyncActionValue.BusinessFolderChatPreferenceAction = (function() {
+
+            function BusinessFolderChatPreferenceAction(p) {
+                if (p)
+                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                        if (p[ks[i]] != null && ks[i] !== "__proto__")
+                            this[ks[i]] = p[ks[i]];
+            }
+
+            BusinessFolderChatPreferenceAction.prototype.preference = null;
+
+            let $oneOfFields;
+
+            // Virtual OneOf for proto3 optional field
+            Object.defineProperty(BusinessFolderChatPreferenceAction.prototype, "_preference", {
+                get: $util.oneOfGetter($oneOfFields = ["preference"]),
+                set: $util.oneOfSetter($oneOfFields)
+            });
+
+            BusinessFolderChatPreferenceAction.create = function create(properties) {
+                return new BusinessFolderChatPreferenceAction(properties);
+            };
+
+            BusinessFolderChatPreferenceAction.encode = function encode(m, w, q) {
+                if (!w)
+                    w = $Writer.create();
+                if (q === undefined)
+                    q = 0;
+                if (q > $util.recursionLimit)
+                    throw Error("max depth exceeded");
+                if (m.preference != null && Object.hasOwnProperty.call(m, "preference"))
+                    w.uint32(8).int32(m.preference);
+                return w;
+            };
+
+            BusinessFolderChatPreferenceAction.decode = function decode(r, l, e, n) {
+                if (!(r instanceof $Reader))
+                    r = $Reader.create(r);
+                if (n === undefined)
+                    n = 0;
+                if (n > $Reader.recursionLimit)
+                    throw Error("maximum nesting depth exceeded");
+                var c, m;
+                if (l === undefined)
+                    c = r.len;
+                else {
+                    c = r.pos + l;
+                    if (c > r.len)
+                        throw RangeError("index out of range");
+                    l = r.len;
+                    r.len = c;
+                }
+                m = new $root.proto.SyncActionValue.BusinessFolderChatPreferenceAction();
+                while (r.pos < c) {
+                    var t = r.uint32();
+                    if (t === e)
+                        break;
+                    switch (t >>> 3) {
+                    case 1: {
+                            m.preference = r.int32();
+                            break;
+                        }
+                    default:
+                        r.skipType(t & 7, n);
+                        break;
+                    }
+                }
+                if (l !== undefined) {
+                    if (r.pos !== c)
+                        throw RangeError("index out of range");
+                    r.len = l;
+                }
+                return m;
+            };
+
+            BusinessFolderChatPreferenceAction.fromObject = function fromObject(d, n) {
+                if (d instanceof $root.proto.SyncActionValue.BusinessFolderChatPreferenceAction)
+                    return d;
+                if (!$util.isObject(d))
+                    throw TypeError(".proto.SyncActionValue.BusinessFolderChatPreferenceAction: object expected");
+                if (n === undefined)
+                    n = 0;
+                if (n > $util.recursionLimit)
+                    throw Error("maximum nesting depth exceeded");
+                var m = new $root.proto.SyncActionValue.BusinessFolderChatPreferenceAction();
+                switch (d.preference) {
+                default:
+                    if (typeof d.preference === "number") {
+                        m.preference = d.preference;
+                        break;
+                    }
+                    break;
+                case "BUSINESS_FOLDER_CHAT_PREFERENCE_UNKNOWN":
+                case 0:
+                    m.preference = 0;
+                    break;
+                case "BUSINESS_FOLDER_CHAT_PREFERENCE_AUTOMATIC":
+                case 1:
+                    m.preference = 1;
+                    break;
+                case "BUSINESS_FOLDER_CHAT_PREFERENCE_INBOX":
+                case 2:
+                    m.preference = 2;
+                    break;
+                case "BUSINESS_FOLDER_CHAT_PREFERENCE_BUSINESS":
+                case 3:
+                    m.preference = 3;
+                    break;
+                }
+                return m;
+            };
+
+            BusinessFolderChatPreferenceAction.toObject = function toObject(m, o, q) {
+                if (!o)
+                    o = {};
+                if (q === undefined)
+                    q = 0;
+                if (q > $util.recursionLimit)
+                    throw Error("max depth exceeded");
+                var d = {};
+                if (m.preference != null && Object.hasOwnProperty.call(m, "preference")) {
+                    d.preference = o.enums === String ? $root.proto.SyncActionValue.BusinessFolderChatPreferenceAction.BusinessFolderChatPreference[m.preference] === undefined ? m.preference : $root.proto.SyncActionValue.BusinessFolderChatPreferenceAction.BusinessFolderChatPreference[m.preference] : m.preference;
+                    if (o.oneofs)
+                        d._preference = "preference";
+                }
+                return d;
+            };
+
+            BusinessFolderChatPreferenceAction.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            BusinessFolderChatPreferenceAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/proto.SyncActionValue.BusinessFolderChatPreferenceAction";
+            };
+
+            BusinessFolderChatPreferenceAction.BusinessFolderChatPreference = (function() {
+                const valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "BUSINESS_FOLDER_CHAT_PREFERENCE_UNKNOWN"] = 0;
+                values[valuesById[1] = "BUSINESS_FOLDER_CHAT_PREFERENCE_AUTOMATIC"] = 1;
+                values[valuesById[2] = "BUSINESS_FOLDER_CHAT_PREFERENCE_INBOX"] = 2;
+                values[valuesById[3] = "BUSINESS_FOLDER_CHAT_PREFERENCE_BUSINESS"] = 3;
+                return values;
+            })();
+
+            return BusinessFolderChatPreferenceAction;
         })();
 
         SyncActionValue.CallLogAction = (function() {

@@ -1,7 +1,7 @@
 syntax = "proto3";
 package proto;
 
-/// WhatsApp Version: 2.3000.1055559184
+/// WhatsApp Version: 2.3000.1055718978
 
 message ACP2Setting {
     optional bool enabled = 1;
@@ -270,6 +270,7 @@ message AIRichResponseTableMetadata {
 
 message AIRichResponseUnifiedResponse {
     optional bytes data = 1;
+    optional bytes gzipData = 2;
 }
 
 enum AISubscriptionRequestType {
@@ -513,6 +514,7 @@ message BotCapabilityMetadata {
         RICH_RESPONSE_SIDE_BY_SIDE_BUFFER_BOTH = 89;
         AI_MUSE_JARVIS_ENVELOPE_GZIP_ENABLED = 90;
         AI_RICH_RESPONSE_INLINE_MEDIA_LIGHTBOX_ENABLED = 91;
+        AI_MUSE_JARVIS_PAYLOAD_GZIP_ENABLED = 93;
     }
 }
 
@@ -1944,9 +1946,14 @@ message DeviceCapabilities {
     optional BizAiWebOnboarding bizAiWebOnboarding = 13;
     optional PhoneNumberSharing phoneNumberSharing = 14;
     optional RecentConversationsOnDemand recentConversationsOnDemand = 15;
+    optional AiMuseJarvisGzip aiMuseJarvisGzip = 16;
     message AiFbidMigration {
         optional uint64 chatDbMigrationTimestamp = 1;
         optional uint32 supportVersion = 2;
+    }
+    
+    message AiMuseJarvisGzip {
+        optional uint32 supportVersion = 1;
     }
     
     message AiThread {
@@ -5028,6 +5035,7 @@ enum MutationProps {
     COMMUNITY_NESTING_STATE_ACTION = 99;
     SHARED_DEVICE_SECRET_ACTION = 100;
     HATCH_CVM_SECRET_ACTION = 101;
+    BUSINESS_FOLDER_CHAT_PREFERENCE_ACTION = 102;
     SHARE_OWN_PN = 10001;
     BUSINESS_BROADCAST_ACTION = 10002;
     AI_THREAD_DELETE_ACTION = 10003;
@@ -5769,6 +5777,7 @@ message SyncActionValue {
     optional CommunityNestingStateAction communityNestingStateAction = 99;
     optional SharedDeviceSecretAction sharedDeviceSecretAction = 100;
     optional HatchCVMSecretAction hatchCvmSecretAction = 101;
+    optional BusinessFolderChatPreferenceAction businessFolderChatPreferenceAction = 102;
     message AgentAction {
         optional string name = 1;
         optional int32 deviceId = 2;
@@ -5890,6 +5899,16 @@ message SyncActionValue {
     
     message BusinessFolderActivationAction {
         optional bool activated = 1;
+    }
+    
+    message BusinessFolderChatPreferenceAction {
+        optional BusinessFolderChatPreference preference = 1;
+        enum BusinessFolderChatPreference {
+            BUSINESS_FOLDER_CHAT_PREFERENCE_UNKNOWN = 0;
+            BUSINESS_FOLDER_CHAT_PREFERENCE_AUTOMATIC = 1;
+            BUSINESS_FOLDER_CHAT_PREFERENCE_INBOX = 2;
+            BUSINESS_FOLDER_CHAT_PREFERENCE_BUSINESS = 3;
+        }
     }
     
     message CallLogAction {
