@@ -19,6 +19,7 @@
 	"files": [
 		"lib/**/*",
 		"WAProto/**/*",
+		"vendor/whatsapp-rust-bridge/**/*",
 		"engine-requirements.js",
 		"scripts/patch-libsignal.cjs"
 	],
