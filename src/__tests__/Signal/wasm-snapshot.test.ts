@@ -72,7 +72,7 @@ describe('WASM snapshot session', () => {
 			new TextEncoder().encode('hola wasm')
 		)
 
-		expect(sent.messageType).toBe(3)
+		expect(sent.messageType).toBe(1)
 		expect(sent.ciphertext.length).toBeGreaterThan(0)
 		expect(sent.changes.session).toBeDefined()
 

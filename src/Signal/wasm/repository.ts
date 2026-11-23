@@ -85,7 +85,11 @@ const resolveStorageId = async (jid: string, address: AddressFactory, lidMapping
 
 const normalizeDecryptError = (error: unknown): Error => {
 	const message = typeof error === 'string' ? error : error instanceof Error ? error.message : ''
-	if (message.includes('DuplicatedMessage') || message.includes('old counter')) {
+	if (
+		message.includes('DuplicatedMessage') ||
+		message.toLowerCase().includes('duplicate message') ||
+		message.includes('old counter')
+	) {
 		return new Boom(MISSING_KEYS_ERROR_TEXT, { data: { cause: message } })
 	}
 

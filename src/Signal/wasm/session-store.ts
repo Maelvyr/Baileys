@@ -188,7 +188,7 @@ export const makeWasmSessionStore = (bridge: WasmSessionBridge, auth: SignalAuth
 					const out = await bridge.encryptWithSnapshot(await snapshot(address, [], storageId), address, data)
 					await apply(storageId, out.changes)
 					return {
-						type: out.messageType === 3 ? ('pkmsg' as const) : ('msg' as const),
+						type: out.messageType === 1 ? ('pkmsg' as const) : ('msg' as const),
 						ciphertext: out.ciphertext
 					}
 				}

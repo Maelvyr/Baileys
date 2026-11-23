@@ -35,7 +35,7 @@ export interface KeyPair {
 }
 
 /**
- * A peer\'s published bundle, as the server hands it over.
+ * A peer's published bundle, as the server hands it over.
  */
 export interface SnapshotBundlePreKey {
     keyId: number;
@@ -82,14 +82,14 @@ export interface SignalSnapshot {
 export interface SignalChanges {
     session?: Uint8Array;
     /**
-     * The peer\'s identity changed, so the session built on the old one is void:
+     * The peer's identity changed, so the session built on the old one is void:
      * delete the session row and do not write `session`.
      */
     sessionCleared: boolean;
     identity?: Uint8Array;
     /**
      * A one-time pre-key this operation consumed. Delete it together with the
-     * session write, never before — see the core\'s `consumed_prekey_id` note.
+     * session write, never before — see the core's `consumed_prekey_id` note.
      */
     removedPreKeyId?: number;
     senderKey?: Uint8Array;
@@ -253,8 +253,8 @@ export class ExpandedAppStateKeys {
 export class GroupCipher {
     free(): void;
     [Symbol.dispose](): void;
-    decrypt(ciphertext: Uint8Array): Promise<Uint8Array>;
-    encrypt(plaintext: Uint8Array): Promise<Uint8Array>;
+    decrypt(ciphertext: Uint8Array | number[]): Promise<Uint8Array>;
+    encrypt(plaintext: Uint8Array | number[]): Promise<Uint8Array>;
     constructor(storage: SignalStorage, group_id: string, sender: ProtocolAddress);
 }
 
@@ -281,7 +281,7 @@ export class LTHashAntiTampering {
     free(): void;
     [Symbol.dispose](): void;
     constructor();
-    subtractThenAdd(base: Uint8Array, subtract: Uint8Array[], add: Uint8Array[]): Uint8Array;
+    subtractThenAdd(base: Uint8Array | number[], subtract: Uint8Array[], add: Uint8Array[]): Uint8Array;
 }
 
 export class LTHashState {
@@ -292,8 +292,9 @@ export class LTHashState {
     getValueMac(index_mac_base64: string): Uint8Array | undefined;
     hasValueMac(index_mac_base64: string): boolean;
     constructor();
-    setValueMac(index_mac_base64: string, value_mac: Uint8Array): void;
-    hash: Uint8Array;
+    setValueMac(index_mac_base64: string, value_mac: Uint8Array | number[]): void;
+    get hash(): Uint8Array;
+    set hash(value: Uint8Array | number[]);
     version: bigint;
 }
 
@@ -307,19 +308,19 @@ export class NoiseSession {
     /**
      * Updates the session hash with the given data (no-op after handshake).
      */
-    authenticate(data: Uint8Array): void;
+    authenticate(data: Uint8Array | number[]): void;
     clearBuffer(): void;
-    decodeFrame(new_data: Uint8Array): Array<any>;
-    decrypt(ciphertext: Uint8Array): Uint8Array;
+    decodeFrame(new_data: Uint8Array | number[]): Array<any>;
+    decrypt(ciphertext: Uint8Array | number[]): Uint8Array;
+    encodeFrameRaw(data: Uint8Array | number[]): Uint8Array;
     encodeFrame(node: EncodingNode): Uint8Array;
-    encodeFrameRaw(data: Uint8Array): Uint8Array;
-    encrypt(plaintext: Uint8Array): Uint8Array;
+    encrypt(plaintext: Uint8Array | number[]): Uint8Array;
     finishInit(): void;
     getHash(): Uint8Array;
-    mixIntoKey(data: Uint8Array): void;
-    constructor(public_key: Uint8Array, noise_header: Uint8Array, routing_info?: Uint8Array | null);
-    processHandshakeFinish(noise_public_key: Uint8Array, noise_private_key: Uint8Array, server_ephemeral: Uint8Array): Uint8Array;
-    processHandshakeInit(server_ephemeral: Uint8Array, server_static_encrypted: Uint8Array, server_payload_encrypted: Uint8Array, private_key: Uint8Array): Uint8Array;
+    mixIntoKey(data: Uint8Array | number[]): void;
+    constructor(public_key: Uint8Array | number[], noise_header: Uint8Array | number[], routing_info?: Uint8Array | number[] | null);
+    processHandshakeFinish(noise_public_key: Uint8Array | number[], noise_private_key: Uint8Array | number[], server_ephemeral: Uint8Array | number[]): Uint8Array;
+    processHandshakeInit(server_ephemeral: Uint8Array | number[], server_static_encrypted: Uint8Array | number[], server_payload_encrypted: Uint8Array | number[], private_key: Uint8Array | number[]): Uint8Array;
     readonly bufferedBytes: number;
     readonly isFinished: boolean;
 }
@@ -339,7 +340,7 @@ export class SenderKeyDistributionMessage {
     private constructor();
     free(): void;
     [Symbol.dispose](): void;
-    static deserialize(serialized: Uint8Array): SenderKeyDistributionMessage;
+    static deserialize(serialized: Uint8Array | number[]): SenderKeyDistributionMessage;
     serialize(): Uint8Array;
 }
 
@@ -353,7 +354,7 @@ export class SenderKeyName {
 export class SenderKeyRecord {
     free(): void;
     [Symbol.dispose](): void;
-    static deserialize(serialized: Uint8Array): SenderKeyRecord;
+    static deserialize(serialized: Uint8Array | number[]): SenderKeyRecord;
     isEmpty(): boolean;
     constructor();
     serialize(): Uint8Array;
@@ -370,31 +371,31 @@ export class SessionRecord {
 
 export function _serializeIdentityKeyPair(key_pair: KeyPair): Uint8Array;
 
-export function calculateAgreement(public_key_bytes: Uint8Array, private_key_bytes: Uint8Array): Uint8Array;
+export function calculateAgreement(public_key_bytes: Uint8Array | number[], private_key_bytes: Uint8Array | number[]): Uint8Array;
 
-export function calculateSignature(private_key_bytes: Uint8Array, message: Uint8Array): Uint8Array;
+export function calculateSignature(private_key_bytes: Uint8Array | number[], message: Uint8Array | number[]): Uint8Array;
 
-export function decodeNode(data: Uint8Array): InternalBinaryNode;
+export function decodeNode(data: Uint8Array | number[]): InternalBinaryNode;
 
-export function decryptPreKeyWithSnapshot(snapshot: SignalSnapshot, address: ProtocolAddress, ciphertext: Uint8Array): Promise<DecryptOutput>;
+export function decryptPreKeyWithSnapshot(snapshot: SignalSnapshot, address: ProtocolAddress, ciphertext: Uint8Array | number[]): Promise<DecryptOutput>;
 
-export function decryptWhisperWithSnapshot(snapshot: SignalSnapshot, address: ProtocolAddress, ciphertext: Uint8Array): Promise<DecryptOutput>;
+export function decryptWhisperWithSnapshot(snapshot: SignalSnapshot, address: ProtocolAddress, ciphertext: Uint8Array | number[]): Promise<DecryptOutput>;
 
 export function encodeNode(node_val: EncodingNode): Uint8Array;
 
-export function encryptWithSnapshot(snapshot: SignalSnapshot, address: ProtocolAddress, plaintext: Uint8Array): Promise<EncryptOutput>;
+export function encryptWithSnapshot(snapshot: SignalSnapshot, address: ProtocolAddress, plaintext: Uint8Array | number[]): Promise<EncryptOutput>;
 
-export function expandAppStateKeys(key_data: Uint8Array): ExpandedAppStateKeys;
+export function expandAppStateKeys(key_data: Uint8Array | number[]): ExpandedAppStateKeys;
 
-export function generateContentMac(operation: number, data: Uint8Array, key_id: Uint8Array, key: Uint8Array): Uint8Array;
+export function generateContentMac(operation: number, data: Uint8Array | number[], key_id: Uint8Array | number[], key: Uint8Array | number[]): Uint8Array;
 
 export function generateIdentityKeyPair(): KeyPair;
 
-export function generateIndexMac(index_bytes: Uint8Array, key: Uint8Array): Uint8Array;
+export function generateIndexMac(index_bytes: Uint8Array | number[], key: Uint8Array | number[]): Uint8Array;
 
 export function generateKeyPair(): KeyPair;
 
-export function generatePatchMac(snapshot_mac: Uint8Array, value_macs: Uint8Array[], version: bigint, name: string, key: Uint8Array): Uint8Array;
+export function generatePatchMac(snapshot_mac: Uint8Array | number[], value_macs: Uint8Array[], version: bigint, name: string, key: Uint8Array | number[]): Uint8Array;
 
 export function generatePreKey(key_id: number): PreKey;
 
@@ -402,7 +403,7 @@ export function generateRegistrationId(): number;
 
 export function generateSignedPreKey(identity_key_pair: KeyPair, signed_key_id: number): SignedPreKey;
 
-export function generateSnapshotMac(lt_hash: Uint8Array, version: bigint, name: string, key: Uint8Array): Uint8Array;
+export function generateSnapshotMac(lt_hash: Uint8Array | number[], version: bigint, name: string, key: Uint8Array | number[]): Uint8Array;
 
 /**
  * Returns which optional features are enabled in this build.
@@ -410,7 +411,7 @@ export function generateSnapshotMac(lt_hash: Uint8Array, version: bigint, name: 
  */
 export function getEnabledFeatures(): EnabledFeatures;
 
-export function getPublicFromPrivateKey(private_key_bytes: Uint8Array): Uint8Array;
+export function getPublicFromPrivateKey(private_key_bytes: Uint8Array | number[]): Uint8Array;
 
 /**
  * Returns the WhatsApp connection header (WA_CONN_HEADER).
@@ -420,7 +421,7 @@ export function getWAConnHeader(): Uint8Array;
 
 export function hasLogger(): boolean;
 
-export function hkdf(buffer: Uint8Array, expanded_length: number, info: HkdfInfo): Uint8Array;
+export function hkdf(buffer: Uint8Array | number[], expanded_length: number, info: HkdfInfo): Uint8Array;
 
 /**
  * Imports at most two normal retention windows per chain, within the core's
@@ -431,7 +432,7 @@ export function importLegacySessionRecordV1(record: LegacySessionRecordV1, conte
 
 export function logMessage(level: string, message: string): void;
 
-export function md5(buffer: Uint8Array): Uint8Array;
+export function md5(buffer: Uint8Array | number[]): Uint8Array;
 
 /**
  * Builds an outgoing session from a peer bundle. Same contract as the rest of
@@ -444,15 +445,15 @@ export function processBundleWithSnapshot(snapshot: SignalSnapshot, address: Pro
  * that shape on disk convert here; the storage adapter itself stays neutral,
  * so a consumer that prefers the native bytes is unaffected.
  */
-export function projectLegacySenderKeyRecordV1(bytes: Uint8Array): Uint8Array;
+export function projectLegacySenderKeyRecordV1(bytes: Uint8Array | number[]): Uint8Array;
 
-export function projectLegacySessionRecordV1(bytes: Uint8Array): LegacySessionProjectionV1;
+export function projectLegacySessionRecordV1(bytes: Uint8Array | number[]): LegacySessionProjectionV1;
 
 export function setLogger(logger: ILogger): void;
 
 export function updateLogger(logger: ILogger): void;
 
-export function verifySignature(public_key_bytes: Uint8Array, message: Uint8Array, signature: Uint8Array): boolean;
+export function verifySignature(public_key_bytes: Uint8Array | number[], message: Uint8Array | number[], signature: Uint8Array | number[]): boolean;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -470,107 +471,112 @@ export interface InitOutput {
     readonly __wbg_senderkeyname_free: (a: number, b: number) => void;
     readonly __wbg_senderkeyrecord_free: (a: number, b: number) => void;
     readonly __wbg_sessionrecord_free: (a: number, b: number) => void;
-    readonly _serializeIdentityKeyPair: (a: number) => number;
+    readonly _serializeIdentityKeyPair: (a: any) => any;
     readonly calculateAgreement: (a: number, b: number, c: number, d: number, e: number) => void;
     readonly calculateSignature: (a: number, b: number, c: number, d: number, e: number) => void;
     readonly decodeNode: (a: number, b: number, c: number) => void;
-    readonly decryptPreKeyWithSnapshot: (a: number, b: number, c: number, d: number) => number;
-    readonly decryptWhisperWithSnapshot: (a: number, b: number, c: number, d: number) => number;
-    readonly encodeNode: (a: number, b: number) => void;
-    readonly encryptWithSnapshot: (a: number, b: number, c: number, d: number) => number;
+    readonly decryptPreKeyWithSnapshot: (a: any, b: number, c: number, d: number) => any;
+    readonly decryptWhisperWithSnapshot: (a: any, b: number, c: number, d: number) => any;
+    readonly encodeNode: (a: number, b: any) => void;
+    readonly encryptWithSnapshot: (a: any, b: number, c: number, d: number) => any;
     readonly expandAppStateKeys: (a: number, b: number) => number;
-    readonly expandedappstatekeys_indexKey: (a: number) => number;
-    readonly expandedappstatekeys_patchMacKey: (a: number) => number;
-    readonly expandedappstatekeys_snapshotMacKey: (a: number) => number;
-    readonly expandedappstatekeys_valueEncryptionKey: (a: number) => number;
-    readonly expandedappstatekeys_valueMacKey: (a: number) => number;
+    readonly expandedappstatekeys_indexKey: (a: number) => any;
+    readonly expandedappstatekeys_patchMacKey: (a: number) => any;
+    readonly expandedappstatekeys_snapshotMacKey: (a: number) => any;
+    readonly expandedappstatekeys_valueEncryptionKey: (a: number) => any;
+    readonly expandedappstatekeys_valueMacKey: (a: number) => any;
     readonly generateContentMac: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => void;
-    readonly generateIdentityKeyPair: () => number;
+    readonly generateIdentityKeyPair: () => any;
     readonly generateIndexMac: (a: number, b: number, c: number, d: number, e: number) => void;
+    readonly generateKeyPair: () => any;
     readonly generatePatchMac: (a: number, b: number, c: number, d: number, e: number, f: bigint, g: number, h: number, i: number, j: number) => void;
-    readonly generatePreKey: (a: number) => number;
-    readonly generateSignedPreKey: (a: number, b: number, c: number) => void;
+    readonly generatePreKey: (a: number) => any;
+    readonly generateRegistrationId: () => number;
+    readonly generateSignedPreKey: (a: number, b: any, c: number) => void;
     readonly generateSnapshotMac: (a: number, b: number, c: number, d: bigint, e: number, f: number, g: number, h: number) => void;
-    readonly getEnabledFeatures: () => number;
+    readonly getEnabledFeatures: () => any;
     readonly getPublicFromPrivateKey: (a: number, b: number, c: number) => void;
-    readonly getWAConnHeader: () => number;
-    readonly groupcipher_decrypt: (a: number, b: number, c: number) => number;
-    readonly groupcipher_encrypt: (a: number, b: number, c: number) => number;
-    readonly groupcipher_new: (a: number, b: number, c: number, d: number) => number;
-    readonly groupsessionbuilder_create: (a: number, b: number) => number;
-    readonly groupsessionbuilder_new: (a: number) => number;
-    readonly groupsessionbuilder_process: (a: number, b: number, c: number) => number;
+    readonly getWAConnHeader: () => any;
+    readonly groupcipher_decrypt: (a: number, b: number, c: number) => any;
+    readonly groupcipher_encrypt: (a: number, b: number, c: number) => any;
+    readonly groupcipher_new: (a: any, b: number, c: number, d: number) => number;
+    readonly groupsessionbuilder_create: (a: number, b: number) => any;
+    readonly groupsessionbuilder_new: (a: any) => number;
+    readonly groupsessionbuilder_process: (a: number, b: number, c: number) => any;
     readonly hasLogger: () => number;
-    readonly hkdf: (a: number, b: number, c: number, d: number, e: number) => void;
-    readonly importLegacySessionRecordV1: (a: number, b: number, c: number) => void;
-    readonly internalbinarynode_attrs: (a: number) => number;
-    readonly internalbinarynode_content: (a: number) => number;
-    readonly internalbinarynode_set_attrs: (a: number, b: number) => void;
-    readonly internalbinarynode_set_content: (a: number, b: number) => void;
+    readonly hkdf: (a: number, b: number, c: number, d: number, e: any) => void;
+    readonly importLegacySessionRecordV1: (a: number, b: any, c: any) => void;
+    readonly internalbinarynode_attrs: (a: number) => any;
+    readonly internalbinarynode_content: (a: number) => any;
+    readonly internalbinarynode_set_attrs: (a: number, b: any) => void;
+    readonly internalbinarynode_set_content: (a: number, b: any) => void;
     readonly internalbinarynode_tag: (a: number, b: number) => void;
-    readonly internalbinarynode_toJSON: (a: number) => number;
+    readonly internalbinarynode_toJSON: (a: number) => any;
     readonly logMessage: (a: number, b: number, c: number, d: number) => void;
     readonly lthashantitampering_new: () => number;
     readonly lthashantitampering_subtractThenAdd: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => void;
     readonly lthashstate_clone: (a: number) => number;
     readonly lthashstate_deleteValueMac: (a: number, b: number, c: number) => number;
-    readonly lthashstate_getValueMac: (a: number, b: number, c: number) => number;
+    readonly lthashstate_getValueMac: (a: number, b: number, c: number) => any;
     readonly lthashstate_hasValueMac: (a: number, b: number, c: number) => number;
-    readonly lthashstate_hash: (a: number) => number;
+    readonly lthashstate_hash: (a: number) => any;
     readonly lthashstate_new: () => number;
     readonly lthashstate_setValueMac: (a: number, b: number, c: number, d: number, e: number) => void;
     readonly lthashstate_set_hash: (a: number, b: number, c: number) => void;
     readonly lthashstate_set_version: (a: number, b: bigint) => void;
     readonly lthashstate_version: (a: number) => bigint;
-    readonly md5: (a: number, b: number) => number;
+    readonly md5: (a: number, b: number) => any;
     readonly noisesession_authenticate: (a: number, b: number, c: number) => void;
     readonly noisesession_bufferedBytes: (a: number) => number;
     readonly noisesession_clearBuffer: (a: number) => void;
     readonly noisesession_decodeFrame: (a: number, b: number, c: number, d: number) => void;
     readonly noisesession_decrypt: (a: number, b: number, c: number, d: number) => void;
-    readonly noisesession_encodeFrame: (a: number, b: number, c: number) => void;
+    readonly noisesession_encodeFrame: (a: number, b: number, c: any) => void;
     readonly noisesession_encodeFrameRaw: (a: number, b: number, c: number, d: number) => void;
     readonly noisesession_encrypt: (a: number, b: number, c: number, d: number) => void;
     readonly noisesession_finishInit: (a: number, b: number) => void;
-    readonly noisesession_getHash: (a: number) => number;
+    readonly noisesession_getHash: (a: number) => any;
     readonly noisesession_isFinished: (a: number) => number;
     readonly noisesession_mixIntoKey: (a: number, b: number, c: number, d: number) => void;
     readonly noisesession_new: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
     readonly noisesession_processHandshakeFinish: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => void;
     readonly noisesession_processHandshakeInit: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number) => void;
-    readonly processBundleWithSnapshot: (a: number, b: number, c: number) => number;
+    readonly processBundleWithSnapshot: (a: any, b: number, c: any) => any;
     readonly projectLegacySenderKeyRecordV1: (a: number, b: number, c: number) => void;
     readonly projectLegacySessionRecordV1: (a: number, b: number, c: number) => void;
     readonly protocoladdress_deviceId: (a: number) => number;
-    readonly protocoladdress_from: (a: number, b: number) => void;
+    readonly protocoladdress_from: (a: number, b: any) => void;
     readonly protocoladdress_id: (a: number, b: number) => void;
     readonly protocoladdress_is: (a: number, b: number) => number;
-    readonly protocoladdress_new: (a: number, b: number, c: number) => void;
+    readonly protocoladdress_new: (a: number, b: any, c: any) => void;
     readonly protocoladdress_toString: (a: number, b: number) => void;
     readonly senderkeydistributionmessage_deserialize: (a: number, b: number, c: number) => void;
-    readonly senderkeydistributionmessage_serialize: (a: number) => number;
+    readonly senderkeydistributionmessage_serialize: (a: number) => any;
     readonly senderkeyname_new: (a: number, b: number, c: number) => number;
     readonly senderkeyname_toString: (a: number, b: number) => void;
     readonly senderkeyrecord_deserialize: (a: number, b: number, c: number) => void;
     readonly senderkeyrecord_isEmpty: (a: number) => number;
     readonly senderkeyrecord_new: () => number;
     readonly senderkeyrecord_serialize: (a: number, b: number) => void;
-    readonly sessionrecord_deserialize: (a: number, b: number) => void;
+    readonly sessionrecord_deserialize: (a: number, b: any) => void;
     readonly sessionrecord_haveOpenSession: (a: number) => number;
-    readonly sessionrecord_serialize: (a: number) => number;
-    readonly setLogger: (a: number, b: number) => void;
+    readonly sessionrecord_serialize: (a: number) => any;
+    readonly setLogger: (a: number, b: any) => void;
+    readonly updateLogger: (a: any) => void;
     readonly verifySignature: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
-    readonly updateLogger: (a: number) => void;
-    readonly generateKeyPair: () => number;
-    readonly generateRegistrationId: () => number;
-    readonly __wasm_bindgen_func_elem_1504: (a: number, b: number, c: number, d: number) => void;
-    readonly __wasm_bindgen_func_elem_1519: (a: number, b: number, c: number, d: number) => void;
+    readonly __wasm_bindgen_func_elem_1361: (a: number, b: number, c: number, d: any) => void;
+    readonly __wasm_bindgen_func_elem_1378: (a: number, b: number, c: any, d: any) => void;
     readonly __wbindgen_export: (a: number, b: number) => number;
     readonly __wbindgen_export2: (a: number, b: number, c: number, d: number) => number;
-    readonly __wbindgen_export3: (a: number) => void;
-    readonly __wbindgen_export4: (a: number, b: number) => void;
+    readonly __wbindgen_export3: (a: number, b: number, c: number) => void;
+    readonly __wbindgen_export4: (a: number) => void;
+    readonly __wbindgen_export5: () => number;
+    readonly __wbindgen_externrefs: WebAssembly.Table;
+    readonly __wbindgen_export6: (a: number, b: number) => void;
     readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
-    readonly __wbindgen_export5: (a: number, b: number, c: number) => void;
+    readonly __wbindgen_export7: (a: number) => void;
+    readonly __wbindgen_export8: (a: number, b: number) => void;
+    readonly __wbindgen_start: () => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
