@@ -27,6 +27,28 @@ makeWASocket({
 El backend legacy sigue siendo el default. WASM solo se usa cuando se pasa
 `makeSignalRepository`; no hay cambio de comportamiento para quien no lo pase.
 
+## Bridge desde el paquete instalado
+
+El paquete incluye el bridge vendorizado. Para cargarlo desde una instalación
+externa (sin usar el repo):
+
+```ts
+import { readFileSync } from 'node:fs'
+import * as bridge from '@synapse-ve/baileys/vendor/whatsapp-rust-bridge/pkg/whatsapp_rust_bridge.js'
+import { makeWasmSignalRepositoryFactory } from '@synapse-ve/baileys'
+
+bridge.initSync({
+  module: readFileSync(
+    'node_modules/@synapse-ve/baileys/vendor/whatsapp-rust-bridge/pkg/whatsapp_rust_bridge_bg.wasm'
+  )
+})
+
+const factory = makeWasmSignalRepositoryFactory(bridge)
+```
+
+Esto se verificó instalando el tarball en un directorio vacío: el factory y el
+bridge cargan con 46 exports.
+
 ## Benchmark
 
 ```bash

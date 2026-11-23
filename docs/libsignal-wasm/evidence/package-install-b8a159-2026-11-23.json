@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-23",
+  "package": "@synapse-ve/baileys@7.0.0-rc14.sync.30",
+  "install": "npm install --ignore-scripts <tarball> in an empty directory",
+  "result": "ok",
+  "exports": {
+    "makeWasmSignalRepositoryFactory": "function",
+    "makeWASocket": "function"
+  },
+  "bridge": {
+    "deepImport": "@synapse-ve/baileys/vendor/whatsapp-rust-bridge/pkg/whatsapp_rust_bridge.js",
+    "exports": 46,
+    "protocolAddress": "function"
+  }
+}
