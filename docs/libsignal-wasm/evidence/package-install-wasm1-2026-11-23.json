@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-23",
+  "package": "@synapse-ve/baileys@7.0.0-rc14.wasm.1",
+  "install": "npm install --ignore-scripts <tarball> in an empty directory",
+  "result": "ok",
+  "tarball": "synapse-ve-baileys-7.0.0-rc14.wasm.1.tgz",
+  "files": 485,
+  "vendorFiles": 7,
+  "exports": {
+    "makeWasmSignalRepositoryFactory": "function",
+    "bridgeDeepImport": "function",
+    "bridgeExports": 46
+  }
+}
