@@ -19,9 +19,16 @@
     "logout": false
   },
   "newSoak": {
-    "startedAtLocal": "2026-11-23T11:48:14-04:00",
+    "startedAtLocal": "2026-11-23T11:53:10-04:00",
     "image": "baileys-wasm-soak:core-b8a159",
     "status": "running",
-    "heartbeat": "connected, 1 connect, 0 closes"
+    "heartbeat": "connected, 1 connect, 0 closes",
+    "note": "restarted after media validation"
+  },
+  "media": {
+    "target": "584145292360",
+    "sent": "3EB07C74BD40B2EDD5D0D8",
+    "status": 3,
+    "receipt": "read"
   }
 }
