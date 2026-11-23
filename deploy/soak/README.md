@@ -4,7 +4,7 @@
 
 ```bash
 cd /opt/baileys-wasm
-docker build -f docker/soak/Dockerfile -t baileys-wasm-soak:local .
+docker build -f docker/soak/Dockerfile -t baileys-wasm-soak:core-b8a159 .
 ```
 
 ## Servicios
