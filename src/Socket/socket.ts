@@ -433,6 +433,7 @@ export const makeSocket = (config: SocketConfig) => {
 	let epoch = 1
 	let keepAliveReq: NodeJS.Timeout
 	let qrTimer: NodeJS.Timeout
+	let offlineTimer: NodeJS.Timeout | undefined
 	let closed = false
 	const MAX_PING_FAILURES = 3
 
@@ -1229,13 +1230,57 @@ export const makeSocket = (config: SocketConfig) => {
 		void end(new Boom('Multi-device beta not joined', { statusCode: DisconnectReason.multideviceMismatch }))
 	})
 
+	// The offline catch-up arrives in batches. The server sends one batch per
+	// request and holds later messages until it is asked again. Keep requesting
+	// until the <offline> node marks the end.
+	let offlineStanzas = 0
+	let offlineDone = false
+
+	const requestOfflineBatch = async (reason: string) => {
+		if (closed || offlineDone) {
+			return
+		}
+
+		offlineStanzas = 0
+		logger.debug({ reason }, 'requesting offline batch')
+		try {
+			await sendNode({
+				tag: 'ib',
+				attrs: {},
+				content: [{ tag: 'offline_batch', attrs: { count: '100' } }]
+			})
+		} catch (error) {
+			logger.warn({ error }, 'failed to request offline batch')
+		}
+	}
+
+	ws.on('frame', (frame: BinaryNode | Uint8Array) => {
+		if (offlineDone || frame instanceof Uint8Array || frame.attrs?.offline === undefined) {
+			return
+		}
+
+		offlineStanzas += 1
+		if (offlineStanzas >= 100) {
+			void requestOfflineBatch('100 offline stanzas received')
+		}
+	})
+
 	ws.on('CB:ib,,offline_preview', async (node: BinaryNode) => {
 		logger.info('offline preview received', JSON.stringify(node))
-		await sendNode({
-			tag: 'ib',
-			attrs: {},
-			content: [{ tag: 'offline_batch', attrs: { count: '100' } }]
-		})
+		await requestOfflineBatch('offline preview')
+		if (closed || offlineDone) {
+			return
+		}
+
+		clearInterval(offlineTimer)
+		offlineTimer = setInterval(() => {
+			if (closed || offlineDone) {
+				clearInterval(offlineTimer)
+				return
+			}
+
+			void requestOfflineBatch('offline catch-up not finished yet')
+		}, 10_000)
 	})
 
 	ws.on('CB:ib,,edge_routing', (node: BinaryNode) => {
@@ -1274,6 +1319,9 @@ export const makeSocket = (config: SocketConfig) => {
 
 	// called when all offline notifs are handled
 	ws.on('CB:ib,,offline', (node: BinaryNode) => {
+		offlineDone = true
+		clearInterval(offlineTimer)
+
 		const child = getBinaryNodeChild(node, 'offline')
 		const offlineNotifs = +(child?.attrs.count || 0)
 

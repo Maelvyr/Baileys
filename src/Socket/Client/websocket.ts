@@ -54,7 +54,9 @@ export class WebSocketClient extends AbstractSocketClient {
 
 		this.track('open', onOpen)
 
-		const events = ['close', 'error', 'upgrade', 'message', 'open', 'ping', 'pong', 'unexpected-response']
+		// Do not forward 'unexpected-response': ws only aborts a non-101 upgrade
+		// when nothing listens to it; forwarding it leaves the socket in CONNECTING.
+		const events = ['close', 'error', 'upgrade', 'message', 'open', 'ping', 'pong']
 
 		for (const event of events) {
 			this.track(event, (...args: any[]) => this.emit(event, ...args))
