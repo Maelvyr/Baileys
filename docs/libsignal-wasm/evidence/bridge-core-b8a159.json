@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-23",
+  "core": "oxidezap/whatsapp-rust@b8a159749573570668af02c55ecffc2493e59aad",
+  "bridgeSource": "WhiskeySockets/Baileys PR #2067 head 3a788d3d",
+  "build": "npx wasm-pack build --target web --out-dir pkg --no-pack --no-opt",
+  "artifact": "vendor/whatsapp-rust-bridge/pkg",
+  "sourcePatch": "docs/libsignal-wasm/bridge-core-b8a159/source.patch",
+  "adapterChanges": [
+    "messageType 1 maps to pkmsg for the new core enum",
+    "duplicate message errors normalize to the existing missing-keys error"
+  ],
+  "verification": "wasm Signal suites 9/9 (27 tests)"
+}

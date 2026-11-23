@@ -305,7 +305,7 @@ Fase actual: 5 (1:1, grupo, retry y rollback vivos validados)
 Soak:        2 ciclos de 72h completos (144h); tercer ciclo activo
 1006/503:    17 / 6 cierres documentados; 1006 = RST del edge, 503 = stream + FIN
 Bridge:      vendorizado, construido desde fuente
-Core:        oxidezap/whatsapp-rust@9649af09 (Oct 27); 262 commits atras de main y v0.7.0
+Core:        oxidezap/whatsapp-rust@b8a15974 (main, Nov 23); bridge reconstruido
 QR:          pendiente para el proximo objetivo de rollout
 Merge:       prohibido
 Produccion:  intacta
