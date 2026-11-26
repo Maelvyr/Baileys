@@ -98983,8 +98983,8 @@ export const proto = $root.proto = (() => {
             }
 
             VpcRequestMessage.prototype.payloadSchemaVersion = null;
-            VpcRequestMessage.prototype.requestId = null;
             VpcRequestMessage.prototype.scopeHint = null;
+            VpcRequestMessage.prototype.token = null;
 
             let $oneOfFields;
 
@@ -98995,14 +98995,14 @@ export const proto = $root.proto = (() => {
             });
 
             // Virtual OneOf for proto3 optional field
-            Object.defineProperty(VpcRequestMessage.prototype, "_requestId", {
-                get: $util.oneOfGetter($oneOfFields = ["requestId"]),
+            Object.defineProperty(VpcRequestMessage.prototype, "_scopeHint", {
+                get: $util.oneOfGetter($oneOfFields = ["scopeHint"]),
                 set: $util.oneOfSetter($oneOfFields)
             });
 
             // Virtual OneOf for proto3 optional field
-            Object.defineProperty(VpcRequestMessage.prototype, "_scopeHint", {
-                get: $util.oneOfGetter($oneOfFields = ["scopeHint"]),
+            Object.defineProperty(VpcRequestMessage.prototype, "_token", {
+                get: $util.oneOfGetter($oneOfFields = ["token"]),
                 set: $util.oneOfSetter($oneOfFields)
             });
 
@@ -99019,10 +99019,10 @@ export const proto = $root.proto = (() => {
                     throw Error("max depth exceeded");
                 if (m.payloadSchemaVersion != null && Object.hasOwnProperty.call(m, "payloadSchemaVersion"))
                     w.uint32(8).uint32(m.payloadSchemaVersion);
-                if (m.requestId != null && Object.hasOwnProperty.call(m, "requestId"))
-                    w.uint32(18).string(m.requestId);
                 if (m.scopeHint != null && Object.hasOwnProperty.call(m, "scopeHint"))
                     w.uint32(24).int32(m.scopeHint);
+                if (m.token != null && Object.hasOwnProperty.call(m, "token"))
+                    w.uint32(34).bytes(m.token);
                 return w;
             };
 
@@ -99053,12 +99053,12 @@ export const proto = $root.proto = (() => {
                             m.payloadSchemaVersion = r.uint32();
                             break;
                         }
-                    case 2: {
-                            m.requestId = r.string();
-                            break;
-                        }
                     case 3: {
                             m.scopeHint = r.int32();
+                            break;
+                        }
+                    case 4: {
+                            m.token = r.bytes();
                             break;
                         }
                     default:
@@ -99086,9 +99086,6 @@ export const proto = $root.proto = (() => {
                 var m = new $root.proto.Message.VpcRequestMessage();
                 if (d.payloadSchemaVersion != null) {
                     m.payloadSchemaVersion = d.payloadSchemaVersion >>> 0;
-                }
-                if (d.requestId != null) {
-                    m.requestId = String(d.requestId);
                 }
                 switch (d.scopeHint) {
                 default:
@@ -99122,6 +99119,12 @@ export const proto = $root.proto = (() => {
                     m.scopeHint = 5;
                     break;
                 }
+                if (d.token != null) {
+                    if (typeof d.token === "string")
+                        $util.base64.decode(d.token, m.token = $util.newBuffer($util.base64.length(d.token)), 0);
+                    else if (d.token.length >= 0)
+                        m.token = d.token;
+                }
                 return m;
             };
 
@@ -99138,15 +99141,15 @@ export const proto = $root.proto = (() => {
                     if (o.oneofs)
                         d._payloadSchemaVersion = "payloadSchemaVersion";
                 }
-                if (m.requestId != null && Object.hasOwnProperty.call(m, "requestId")) {
-                    d.requestId = m.requestId;
-                    if (o.oneofs)
-                        d._requestId = "requestId";
-                }
                 if (m.scopeHint != null && Object.hasOwnProperty.call(m, "scopeHint")) {
                     d.scopeHint = o.enums === String ? $root.proto.Message.VpcRequestMessage.ScopeHint[m.scopeHint] === undefined ? m.scopeHint : $root.proto.Message.VpcRequestMessage.ScopeHint[m.scopeHint] : m.scopeHint;
                     if (o.oneofs)
                         d._scopeHint = "scopeHint";
+                }
+                if (m.token != null && Object.hasOwnProperty.call(m, "token")) {
+                    d.token = o.bytes === String ? $util.base64.encode(m.token, 0, m.token.length) : o.bytes === Array ? Array.prototype.slice.call(m.token) : m.token;
+                    if (o.oneofs)
+                        d._token = "token";
                 }
                 return d;
             };

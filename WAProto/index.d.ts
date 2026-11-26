@@ -12072,15 +12072,15 @@ export namespace proto {
 
         interface IVpcRequestMessage {
             payloadSchemaVersion?: (number|null);
-            requestId?: (string|null);
             scopeHint?: (proto.Message.VpcRequestMessage.ScopeHint|null);
+            token?: (Uint8Array|null);
         }
 
         class VpcRequestMessage implements IVpcRequestMessage {
             constructor(p?: proto.Message.IVpcRequestMessage);
             public payloadSchemaVersion?: (number|null);
-            public requestId?: (string|null);
             public scopeHint?: (proto.Message.VpcRequestMessage.ScopeHint|null);
+            public token?: (Uint8Array|null);
             public static create(properties?: proto.Message.IVpcRequestMessage): proto.Message.VpcRequestMessage;
             public static encode(m: proto.Message.IVpcRequestMessage, w?: $protobuf.Writer): $protobuf.Writer;
             public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.Message.VpcRequestMessage;
