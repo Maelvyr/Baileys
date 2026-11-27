@@ -1,0 +1,179 @@
+diff -ruN '--exclude=target' '--exclude=pkg' '--exclude=node_modules' '--exclude=Cargo.lock' baileys-pr2067/packages/whatsapp-rust-bridge/Cargo.toml bridge-update/Cargo.toml
+--- baileys-pr2067/packages/whatsapp-rust-bridge/Cargo.toml	2026-10-27 17:21:02.000000000 -0400
++++ bridge-update/Cargo.toml	2026-11-23 11:24:33.404148564 -0400
+@@ -88,15 +88,15 @@
+ tsify = { version = "0.5.6", default-features = false, features = ["js"] }
+ uuid = { version = "1.18.1", default-features = false, features = ["v4", "js"] }
+ 
+-wacore-appstate = { git = "https://github.com/oxidezap/whatsapp-rust.git", rev = "9649af098260cf53b6b1d7c2434b1a21cd6378b3", package = "wacore-appstate" }
+-wacore-binary = { git = "https://github.com/oxidezap/whatsapp-rust.git", rev = "9649af098260cf53b6b1d7c2434b1a21cd6378b3", default-features = false, features = [
++wacore-appstate = { git = "https://github.com/oxidezap/whatsapp-rust.git", rev = "b8a159749573570668af02c55ecffc2493e59aad", package = "wacore-appstate" }
++wacore-binary = { git = "https://github.com/oxidezap/whatsapp-rust.git", rev = "b8a159749573570668af02c55ecffc2493e59aad", default-features = false, features = [
+     "serde",
+ ] }
+-wacore-libsignal = { git = "https://github.com/oxidezap/whatsapp-rust.git", rev = "9649af098260cf53b6b1d7c2434b1a21cd6378b3", package = "wacore-libsignal", features = [
++wacore-libsignal = { git = "https://github.com/oxidezap/whatsapp-rust.git", rev = "b8a159749573570668af02c55ecffc2493e59aad", package = "wacore-libsignal", features = [
+     "legacy-session-interop",
+ ] }
+-wacore-noise = { git = "https://github.com/oxidezap/whatsapp-rust.git", rev = "9649af098260cf53b6b1d7c2434b1a21cd6378b3", package = "wacore-noise" }
+-waproto = { git = "https://github.com/oxidezap/whatsapp-rust.git", rev = "9649af098260cf53b6b1d7c2434b1a21cd6378b3", package = "waproto" }
++wacore-noise = { git = "https://github.com/oxidezap/whatsapp-rust.git", rev = "b8a159749573570668af02c55ecffc2493e59aad", package = "wacore-noise" }
++waproto = { git = "https://github.com/oxidezap/whatsapp-rust.git", rev = "b8a159749573570668af02c55ecffc2493e59aad", package = "waproto" }
+ wasm-bindgen = "0.2.100"
+ wasm-bindgen-futures = "0.4.55"
+ web-sys = { version = "0.3", features = [
+diff -ruN '--exclude=target' '--exclude=pkg' '--exclude=node_modules' '--exclude=Cargo.lock' baileys-pr2067/packages/whatsapp-rust-bridge/src/curve.rs bridge-update/src/curve.rs
+--- baileys-pr2067/packages/whatsapp-rust-bridge/src/curve.rs	2026-10-27 17:21:02.000000000 -0400
++++ bridge-update/src/curve.rs	2026-11-23 11:28:22.838959394 -0400
+@@ -4,9 +4,7 @@
+ use serde::{Deserialize, Serialize};
+ use tsify::Tsify;
+ use wacore_libsignal::{
+-    core::curve::{
+-        KeyPair as CoreKeyPair, PrivateKey as CorePrivateKey, PublicKey as CorePublicKey,
+-    },
++    core::{KeyPair as CoreKeyPair, PrivateKey as CorePrivateKey, PublicKey as CorePublicKey},
+     protocol::CurveError,
+ };
+ use wasm_bindgen::prelude::*;
+@@ -36,11 +34,9 @@
+ 
+ fn map_err(err: CurveError) -> JsValue {
+     match &err {
+-        CurveError::BadKeyLength(_, 0) => JsValue::from_str("Invalid private key type"),
+-        CurveError::BadKeyLength(_, len) if *len != 32 => {
+-            JsValue::from_str("Incorrect private key length")
+-        }
+-        _ => JsValue::from_str(&err.to_string()),
++        CurveError::NoKeyTypeIdentifier => JsValue::from_str("Invalid private key type"),
++        CurveError::InvalidKey => JsValue::from_str("Invalid key encoding"),
++        CurveError::Crypto => JsValue::from_str("Curve25519 operation failed"),
+     }
+ }
+ 
+@@ -131,7 +127,7 @@
+         .try_into()
+         .map_err(|_| JsValue::from_str("Signature must be 64 bytes long"))?;
+ 
+-    Ok(pub_key.verify_signature_for_multipart_message(&[message], signature_array))
++    Ok(pub_key.verify_signature(message, signature_array))
+ }
+ 
+ fn derive_signing_public_key(private_key_bytes: &[u8; 32]) -> [u8; 32] {
+diff -ruN '--exclude=target' '--exclude=pkg' '--exclude=node_modules' '--exclude=Cargo.lock' baileys-pr2067/packages/whatsapp-rust-bridge/src/key_helper.rs bridge-update/src/key_helper.rs
+--- baileys-pr2067/packages/whatsapp-rust-bridge/src/key_helper.rs	2026-10-27 17:21:02.000000000 -0400
++++ bridge-update/src/key_helper.rs	2026-11-23 11:28:12.179254663 -0400
+@@ -2,7 +2,7 @@
+ use rand::{Rng, rngs::StdRng};
+ use serde::Serialize;
+ use tsify::Tsify;
+-use wacore_libsignal::core::curve::{KeyPair as CoreKeyPair, PrivateKey as CorePrivateKey};
++use wacore_libsignal::core::{KeyPair as CoreKeyPair, PrivateKey as CorePrivateKey};
+ use wasm_bindgen::prelude::*;
+ 
+ pub use crate::curve::KeyPair;
+diff -ruN '--exclude=target' '--exclude=pkg' '--exclude=node_modules' '--exclude=Cargo.lock' baileys-pr2067/packages/whatsapp-rust-bridge/src/lib.rs bridge-update/src/lib.rs
+--- baileys-pr2067/packages/whatsapp-rust-bridge/src/lib.rs	2026-10-27 17:21:02.000000000 -0400
++++ bridge-update/src/lib.rs	2026-11-23 11:28:12.179288216 -0400
+@@ -5,7 +5,6 @@
+ mod counter_lease;
+ pub mod crypto;
+ pub mod curve;
+-mod derivation_cache;
+ pub mod group_cipher;
+ pub mod group_types;
+ #[cfg(feature = "image")]
+diff -ruN '--exclude=target' '--exclude=pkg' '--exclude=node_modules' '--exclude=Cargo.lock' baileys-pr2067/packages/whatsapp-rust-bridge/src/snapshot_api.rs bridge-update/src/snapshot_api.rs
+--- baileys-pr2067/packages/whatsapp-rust-bridge/src/snapshot_api.rs	2026-10-27 17:21:02.000000000 -0400
++++ bridge-update/src/snapshot_api.rs	2026-11-23 11:28:31.013444569 -0400
+@@ -17,7 +17,7 @@
+ 
+ use wacore_libsignal::protocol::{
+     GenericSignedPreKey as _, IdentityKey, IdentityKeyPair, KeyPair, PreKeyBundle, PreKeyId,
+-    PreKeyRecord, PreKeySignalMessage, PrivateKey, PublicKey as CorePublicKey, SenderKeyRecord,
++    PreKeyRecord, PreKeySignalMessage, PrivateKey, PublicKey, SenderKeyRecord,
+     SessionRecord, SignalMessage, SignedPreKeyId, SignedPreKeyRecord, Timestamp, UsePQRatchet,
+     message_decrypt_prekey, message_decrypt_signal, message_encrypt, process_prekey_bundle,
+ };
+@@ -171,11 +171,11 @@
+     }
+ 
+     for pre_key in snapshot.pre_keys {
+-        let pair = KeyPair::from_public_and_private(
+-            &with_prefix(pre_key.key_pair.public),
+-            &pre_key.key_pair.private,
+-        )
+-        .map_err(|e| err("snapshot.preKeys", e))?;
++        let public = PublicKey::deserialize(&with_prefix(pre_key.key_pair.public))
++            .map_err(|e| err("snapshot.preKeys", e))?;
++        let private = PrivateKey::deserialize(&pre_key.key_pair.private)
++            .map_err(|e| err("snapshot.preKeys", e))?;
++        let pair = KeyPair::new(public, private);
+         store.with_pre_key(
+             pre_key.id,
+             PreKeyRecord::new(PreKeyId::from(pre_key.id), &pair),
+@@ -183,11 +183,11 @@
+     }
+ 
+     for signed in snapshot.signed_pre_keys {
+-        let pair = KeyPair::from_public_and_private(
+-            &with_prefix(signed.key_pair.public),
+-            &signed.key_pair.private,
+-        )
+-        .map_err(|e| err("snapshot.signedPreKeys", e))?;
++        let public = PublicKey::deserialize(&with_prefix(signed.key_pair.public))
++            .map_err(|e| err("snapshot.signedPreKeys", e))?;
++        let private = PrivateKey::deserialize(&signed.key_pair.private)
++            .map_err(|e| err("snapshot.signedPreKeys", e))?;
++        let pair = KeyPair::new(public, private);
+         store.with_signed_pre_key(
+             signed.id,
+             SignedPreKeyRecord::new(
+@@ -195,7 +195,8 @@
+                 Timestamp::from_epoch_millis(0),
+                 &pair,
+                 &signed.signature,
+-            ),
++            )
++            .map_err(|e| err("snapshot.signedPreKeys", e))?,
+         );
+     }
+ 
+@@ -363,13 +364,13 @@
+     let pre_key = bundle
+         .pre_key
+         .map(|pk| {
+-            CorePublicKey::deserialize(&pk.public_key)
++            PublicKey::deserialize(&pk.public_key)
+                 .map(|key| (pk.key_id.into(), key))
+                 .map_err(|e| err("bundle.preKey", e))
+         })
+         .transpose()?;
+ 
+-    let signed_public = CorePublicKey::deserialize(&bundle.signed_pre_key.public_key)
++    let signed_public = PublicKey::deserialize(&bundle.signed_pre_key.public_key)
+         .map_err(|e| err("bundle.signedPreKey", e))?;
+     let identity_key =
+         IdentityKey::decode(&bundle.identity_key).map_err(|e| err("bundle.identityKey", e))?;
+diff -ruN '--exclude=target' '--exclude=pkg' '--exclude=node_modules' '--exclude=Cargo.lock' baileys-pr2067/packages/whatsapp-rust-bridge/src/snapshot_store.rs bridge-update/src/snapshot_store.rs
+--- baileys-pr2067/packages/whatsapp-rust-bridge/src/snapshot_store.rs	2026-10-27 17:21:02.000000000 -0400
++++ bridge-update/src/snapshot_store.rs	2026-11-23 11:28:22.838750182 -0400
+@@ -91,7 +91,6 @@
+     pub fn with_sender_key(&self, record: SenderKeyRecord) -> SignalResult<()> {
+         let record = crate::counter_lease::waive_sender_key(record)?;
+         // Mirror of the note in the adapter's `load_sender_key`.
+-        crate::derivation_cache::warm(&record);
+         self.inner.borrow_mut().sender_key = Some(record);
+         Ok(())
+     }
+diff -ruN '--exclude=target' '--exclude=pkg' '--exclude=node_modules' '--exclude=Cargo.lock' baileys-pr2067/packages/whatsapp-rust-bridge/src/storage_adapter.rs bridge-update/src/storage_adapter.rs
+--- baileys-pr2067/packages/whatsapp-rust-bridge/src/storage_adapter.rs	2026-10-27 17:21:02.000000000 -0400
++++ bridge-update/src/storage_adapter.rs	2026-11-23 11:28:22.838512045 -0400
+@@ -319,7 +319,6 @@
+ 
+         let record = crate::counter_lease::waive_sender_key(record)?;
+         // The record is rebuilt per operation, so its derivation memo is cold.
+-        crate::derivation_cache::warm(&record);
+ 
+         self.cached_sender_keys
+             .borrow_mut()

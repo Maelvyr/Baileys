@@ -1,0 +1,42 @@
+{
+  "campaign": "wasm VPS soak",
+  "completedAtLocal": "2026-11-23T10:25:09-04:00",
+  "cycles": [
+    {
+      "startLocal": "2026-11-17T10:24:56-04:00",
+      "endLocal": "2026-11-20T10:24:56-04:00",
+      "minutes": 4320,
+      "connects": 15,
+      "closes": 14,
+      "messages": 1798
+    },
+    {
+      "startLocal": "2026-11-20T10:25:00-04:00",
+      "endLocal": "2026-11-23T10:25:09-04:00",
+      "minutes": 4320,
+      "connects": 10,
+      "closes": 9,
+      "messages": 1607
+    }
+  ],
+  "thirdCycle": {
+    "startLocal": "2026-11-23T10:25:19-04:00",
+    "status": "running",
+    "connectsAtCut": 1,
+    "closesAtCut": 0,
+    "messagesAtCut": 45
+  },
+  "closeTypes": {
+    "1006": 17,
+    "503": 6
+  },
+  "evidence": {
+    "directories": 22,
+    "missingPcap": "first 503 (old watcher only captured 1006)",
+    "pcapPath": "/var/log/baileys-soak/evidence/"
+  },
+  "findings": {
+    "1006": "server/edge TCP RST; client healthy before each close; no local keepalive or event-loop cause",
+    "503": "server stream error followed by TCP FIN; exact stream:error detail not captured"
+  }
+}

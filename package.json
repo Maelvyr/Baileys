@@ -1,7 +1,7 @@
 {
 	"name": "@synapse-ve/baileys",
 	"type": "module",
-	"version": "7.0.0-rc14.sync.30",
+	"version": "7.0.0-rc14.wasm.1",
 	"description": "Independent Baileys fork for WhatsApp Web, maintained by Synapse-VE",
 	"keywords": [
 		"whatsapp",
@@ -19,12 +19,15 @@
 	"files": [
 		"lib/**/*",
 		"WAProto/**/*",
+		"vendor/whatsapp-rust-bridge/**/*",
 		"engine-requirements.js",
 		"scripts/patch-libsignal.cjs"
 	],
 	"scripts": {
 		"build:all": "npm run build && npm run build:docs",
 		"build:docs": "typedoc",
+		"bench:wasm": "node scripts/bench-wasm.mjs",
+		"soak:wasm": "node scripts/soak-wasm.mjs",
 		"build": "tsc -P tsconfig.build.json && tsc-esm-fix --tsconfig=tsconfig.build.json --ext=.js",
 		"changelog:last": "conventional-changelog -p angular -r 2",
 		"changelog:preview": "conventional-changelog -p angular -u",

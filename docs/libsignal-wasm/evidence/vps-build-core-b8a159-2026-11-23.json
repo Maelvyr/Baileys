@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-23",
+  "core": "oxidezap/whatsapp-rust@b8a159749573570668af02c55ecffc2493e59aad",
+  "vps": "162.246.22.156",
+  "sourceArchive": "origin/feat/libsignal-wasm@31bfb30144",
+  "node": "v24.22.3",
+  "dockerImage": "baileys-wasm-soak:core-b8a159",
+  "dockerBuild": "success",
+  "wasmLoad": {
+    "ok": true,
+    "exports": 46
+  },
+  "wasmTestOnVps": {
+    "suite": "src/__tests__/Signal/wasm-snapshot.test.ts",
+    "result": "passed",
+    "nodeOptions": "--max-old-space-size=2048"
+  },
+  "liveSoak": "not started; current campaign remains untouched",
+  "note": "Full Signal suite on the 1.6 GB VPS ran out of heap; individual WASM suites pass with a larger heap. The Docker image and WASM load were verified."
+}

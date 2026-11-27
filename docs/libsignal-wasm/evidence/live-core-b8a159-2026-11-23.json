@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-23",
+  "core": "oxidezap/whatsapp-rust@b8a159749573570668af02c55ecffc2493e59aad",
+  "vpsImage": "baileys-wasm-soak:core-b8a159",
+  "existingAuth": "opened without QR",
+  "oneToOne": {
+    "target": "584145292360",
+    "sent": "3EB036A792D321B9DC4753",
+    "status": 3,
+    "receipt": "read"
+  },
+  "group": {
+    "created": "120363430157093170@g.us",
+    "sent": "3EB0A225F08239C34E89E3",
+    "receipt": "read"
+  },
+  "legacyRollback": {
+    "opened": true,
+    "logout": false
+  },
+  "newSoak": {
+    "startedAtLocal": "2026-11-23T11:53:10-04:00",
+    "image": "baileys-wasm-soak:core-b8a159",
+    "status": "running",
+    "heartbeat": "connected, 1 connect, 0 closes",
+    "note": "restarted after media validation"
+  },
+  "media": {
+    "target": "584145292360",
+    "sent": "3EB07C74BD40B2EDD5D0D8",
+    "status": 3,
+    "receipt": "read"
+  }
+}

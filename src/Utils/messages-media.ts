@@ -7,7 +7,7 @@ import type { Agent } from 'https'
 import type { IAudioMetadata } from 'music-metadata'
 import { tmpdir } from 'os'
 import { join } from 'path'
-import { Readable, Transform } from 'stream'
+import { pipeline, Readable, Transform } from 'stream'
 import { URL } from 'url'
 import { proto } from '../../WAProto/index.js'
 import { DEFAULT_ORIGIN, MEDIA_HKDF_KEY_MAPPING, MEDIA_PATH_MAP, type MediaType } from '../Defaults'
@@ -525,10 +525,15 @@ export const selectMediaHost = (
 export const getUrlFromDirectPath = (directPath: string, host: string = DEF_MEDIA_HOST) =>
 	`https://${host}${directPath}`
 
+// Some media messages carry a placeholder host that does not resolve.
+// Their directPath is valid, so use the default media host instead.
+const PLACEHOLDER_MEDIA_HOST = 'a.whatsapp.net'
+
 const extractHost = (url: string | null | undefined): string | undefined => {
 	if (!url) return undefined
 	try {
-		return new URL(url).host
+		const host = new URL(url).host
+		return host === PLACEHOLDER_MEDIA_HOST ? undefined : host
 	} catch {
 		return undefined
 	}
@@ -655,7 +660,10 @@ export const downloadEncryptedContent = async (
 			}
 		}
 	})
-	return fetched.pipe(output, { end: true })
+	// pipe() does not forward source errors: a dropped connection left the
+	// returned stream open forever. pipeline() forwards the error and destroys both.
+	pipeline(fetched, output, () => {})
+	return output
 }
 
 export function extensionForMediaMessage(message: WAMessageContent) {

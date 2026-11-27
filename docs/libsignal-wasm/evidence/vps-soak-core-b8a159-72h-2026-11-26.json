@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-26",
+  "core": "oxidezap/whatsapp-rust@b8a159749573570668af02c55ecffc2493e59aad",
+  "image": "baileys-wasm-soak:core-b8a159",
+  "cycle": {
+    "startLocal": "2026-11-23T11:53:11-04:00",
+    "endLocal": "2026-11-26T11:53:10-04:00",
+    "minutes": 4320,
+    "connects": 22,
+    "closes": 21,
+    "messages": 9726,
+    "closeTypes": { "1006": 17, "503": 4 }
+  },
+  "nextCycle": {
+    "startLocal": "2026-11-26T11:53:21-04:00",
+    "statusAtCheck": "running",
+    "minutesAtCheck": 1267,
+    "connects": 4,
+    "closes": 3,
+    "messages": 14057,
+    "closeTypes": { "1006": 3, "503": 0 }
+  },
+  "previousCore": {
+    "twoCyclesHours": 144,
+    "messages": 3405,
+    "closeTypes": { "1006": 17, "503": 6 }
+  },
+  "normalized": {
+    "previous1006Per1000Messages": 4.99,
+    "new1006Per1000Messages": 1.75,
+    "previous503Per1000Messages": 1.76,
+    "new503Per1000Messages": 0.41
+  },
+  "health": {
+    "eventLoopP99Ms": "21-27",
+    "pingFailures": 0,
+    "conclusion": "72h completed; 1006 remains server-side RST, 503 remains server-side stream/FIN; no local keepalive or event-loop failure. New cycle has much higher message volume, so raw close counts must be normalized."
+  }
+}

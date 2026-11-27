@@ -16,6 +16,7 @@ import {
 } from '../Defaults'
 import {
 	type AuthenticationCreds,
+	type ConnectionHealth,
 	type LIDMapping,
 	type NewChatMessageCapInfo,
 	QueryIds,
@@ -422,12 +423,32 @@ export const makeSocket = (config: SocketConfig) => {
 	const signalRepository = makeSignalRepository({ creds, keys }, logger, pnFromLIDUSync)
 
 	let lastDateRecv: Date
+	let lastInboundAt: Date | null = null
+	let connectedAt: Date | null = null
+	let lastPingAt: Date | null = null
+	let lastPingRttMs: number | null = null
+	let consecutivePingFailures = 0
+	let pingsSent = 0
+	let pingsFailed = 0
 	let epoch = 1
 	let keepAliveReq: NodeJS.Timeout
 	let qrTimer: NodeJS.Timeout
+	let offlineTimer: NodeJS.Timeout | undefined
 	let closed = false
+	const MAX_PING_FAILURES = 3
 
 	const socketEndHandlers: Array<(error: Error | undefined) => void | Promise<void>> = []
+
+	const connectionHealth = (): ConnectionHealth => ({
+		connected: ws.isOpen,
+		connectedAt,
+		lastInboundAt,
+		lastPingAt,
+		lastPingRttMs,
+		consecutivePingFailures,
+		pingsSent,
+		pingsFailed
+	})
 
 	/** log & process any unexpected errors */
 	const onUnexpectedError = (err: Error | Boom, msg: string) => {
@@ -730,6 +751,7 @@ export const makeSocket = (config: SocketConfig) => {
 		await noise.decodeFrame(data, frame => {
 			// reset ping timeout
 			lastDateRecv = new Date()
+			lastInboundAt = lastDateRecv
 
 			let anyTriggered = false
 
@@ -774,7 +796,7 @@ export const makeSocket = (config: SocketConfig) => {
 		closed = true
 		logger.info({ trace: error?.stack }, error ? 'connection errored' : 'connection closed')
 
-		clearInterval(keepAliveReq)
+		clearTimeout(keepAliveReq)
 		clearTimeout(qrTimer)
 
 		ws.removeAllListeners('close')
@@ -782,12 +804,15 @@ export const makeSocket = (config: SocketConfig) => {
 		ws.removeAllListeners('message')
 
 		signalRepository.close?.()
+		noise.destroy()
 
 		if (!ws.isClosed && !ws.isClosing) {
 			try {
 				await ws.close()
 			} catch {}
 		}
+
+		ws.removeAllListeners()
 
 		for (const handler of socketEndHandlers) {
 			try {
@@ -832,8 +857,9 @@ export const makeSocket = (config: SocketConfig) => {
 		})
 	}
 
-	const startKeepAliveRequest = () =>
-		(keepAliveReq = setInterval(() => {
+	const runKeepAlive = async () => {
+		if (closed) return
+		try {
 			if (!lastDateRecv) {
 				lastDateRecv = new Date()
 			}
@@ -844,25 +870,62 @@ export const makeSocket = (config: SocketConfig) => {
 				it could be that the network is down
 			*/
 			if (diff > keepAliveIntervalMs + 5000) {
-				void end(new Boom('Connection was lost', { statusCode: DisconnectReason.connectionLost }))
-			} else if (ws.isOpen) {
-				// if its all good, send a keep alive request
-				query({
-					tag: 'iq',
-					attrs: {
-						id: generateMessageTag(),
-						to: S_WHATSAPP_NET,
-						type: 'get',
-						xmlns: 'w:p'
-					},
-					content: [{ tag: 'ping', attrs: {} }]
-				}).catch(err => {
-					logger.error({ trace: err.stack }, 'error in sending keep alive')
-				})
-			} else {
-				logger.warn('keep alive called when WS not open')
+				await end(new Boom('Connection was lost', { statusCode: DisconnectReason.connectionLost }))
+				return
 			}
-		}, keepAliveIntervalMs))
+
+			if (!ws.isOpen) {
+				logger.warn('keep alive called when WS not open')
+				return
+			}
+
+			const startedAt = Date.now()
+			lastPingAt = new Date()
+			pingsSent++
+			try {
+				await query(
+					{
+						tag: 'iq',
+						attrs: {
+							id: generateMessageTag(),
+							to: S_WHATSAPP_NET,
+							type: 'get',
+							xmlns: 'w:p'
+						},
+						content: [{ tag: 'ping', attrs: {} }]
+					},
+					Math.min(keepAliveIntervalMs, 15_000)
+				)
+				lastPingRttMs = Date.now() - startedAt
+				consecutivePingFailures = 0
+			} catch (err) {
+				pingsFailed++
+				consecutivePingFailures++
+				logger.error(
+					{ trace: err instanceof Error ? err.stack : String(err), consecutivePingFailures },
+					'error in sending keep alive'
+				)
+				if (consecutivePingFailures >= MAX_PING_FAILURES) {
+					await end(
+						new Boom('Connection lost after repeated keep-alive failures', {
+							statusCode: DisconnectReason.connectionLost
+						})
+					)
+				}
+			}
+		} finally {
+			if (!closed) {
+				keepAliveReq = setTimeout(runKeepAlive, keepAliveIntervalMs)
+				keepAliveReq.unref?.()
+			}
+		}
+	}
+
+	const startKeepAliveRequest = () => {
+		keepAliveReq = setTimeout(runKeepAlive, keepAliveIntervalMs)
+		keepAliveReq.unref?.()
+	}
+
 	/** i have no idea why this exists. pls enlighten me */
 	const sendPassiveIq = (tag: 'passive' | 'active') =>
 		query({
@@ -1008,7 +1071,19 @@ export const makeSocket = (config: SocketConfig) => {
 		// 1006 is the TCP path dying without a frame, 1011-1013 are server faults.
 		const reasonText = reason ? String(reason).trim() : ''
 		const detail = typeof code === 'number' ? ` (ws close ${code}${reasonText ? `: ${reasonText}` : ''})` : ''
-		void end(new Boom(`Connection Terminated${detail}`, { statusCode: DisconnectReason.connectionClosed }))
+		const closeCode = typeof code === 'number' ? code : null
+		void end(
+			new Boom(`Connection Terminated${detail}`, {
+				statusCode: DisconnectReason.connectionClosed,
+				data: {
+					closeCode,
+					closeReason: reasonText || null,
+					wasClean: closeCode === 1000 || closeCode === 1001,
+					connectedAt,
+					lastInboundAt
+				}
+			})
+		)
 	})
 	// the server terminated the connection
 	ws.on(
@@ -1097,6 +1172,11 @@ export const makeSocket = (config: SocketConfig) => {
 		}
 
 		logger.info('opened connection to WA')
+		connectedAt = new Date()
+		lastInboundAt = connectedAt
+		lastPingAt = null
+		lastPingRttMs = null
+		consecutivePingFailures = 0
 		clearTimeout(qrTimer) // will never happen in all likelyhood -- but just in case WA sends success on first try
 
 		ev.emit('creds.update', { me: { ...authState.creds.me!, lid: node.attrs.lid } })
@@ -1150,13 +1230,57 @@ export const makeSocket = (config: SocketConfig) => {
 		void end(new Boom('Multi-device beta not joined', { statusCode: DisconnectReason.multideviceMismatch }))
 	})
 
+	// The offline catch-up arrives in batches. The server sends one batch per
+	// request and holds later messages until it is asked again. Keep requesting
+	// until the <offline> node marks the end.
+	let offlineStanzas = 0
+	let offlineDone = false
+
+	const requestOfflineBatch = async (reason: string) => {
+		if (closed || offlineDone) {
+			return
+		}
+
+		offlineStanzas = 0
+		logger.debug({ reason }, 'requesting offline batch')
+		try {
+			await sendNode({
+				tag: 'ib',
+				attrs: {},
+				content: [{ tag: 'offline_batch', attrs: { count: '100' } }]
+			})
+		} catch (error) {
+			logger.warn({ error }, 'failed to request offline batch')
+		}
+	}
+
+	ws.on('frame', (frame: BinaryNode | Uint8Array) => {
+		if (offlineDone || frame instanceof Uint8Array || frame.attrs?.offline === undefined) {
+			return
+		}
+
+		offlineStanzas += 1
+		if (offlineStanzas >= 100) {
+			void requestOfflineBatch('100 offline stanzas received')
+		}
+	})
+
 	ws.on('CB:ib,,offline_preview', async (node: BinaryNode) => {
 		logger.info('offline preview received', JSON.stringify(node))
-		await sendNode({
-			tag: 'ib',
-			attrs: {},
-			content: [{ tag: 'offline_batch', attrs: { count: '100' } }]
-		})
+		await requestOfflineBatch('offline preview')
+		if (closed || offlineDone) {
+			return
+		}
+
+		clearInterval(offlineTimer)
+		offlineTimer = setInterval(() => {
+			if (closed || offlineDone) {
+				clearInterval(offlineTimer)
+				return
+			}
+
+			void requestOfflineBatch('offline catch-up not finished yet')
+		}, 10_000)
 	})
 
 	ws.on('CB:ib,,edge_routing', (node: BinaryNode) => {
@@ -1195,6 +1319,9 @@ export const makeSocket = (config: SocketConfig) => {
 
 	// called when all offline notifs are handled
 	ws.on('CB:ib,,offline', (node: BinaryNode) => {
+		offlineDone = true
+		clearInterval(offlineTimer)
+
 		const child = getBinaryNodeChild(node, 'offline')
 		const offlineNotifs = +(child?.attrs.count || 0)
 
@@ -1334,6 +1461,7 @@ export const makeSocket = (config: SocketConfig) => {
 			mediaHost = host
 		},
 		waitForSocketOpen,
+		connectionHealth,
 		sendRawMessage,
 		sendNode,
 		logout,
