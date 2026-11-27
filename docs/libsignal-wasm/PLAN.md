@@ -302,7 +302,7 @@ Esa prueba corre en CI sin compilar Rust.
 
 ```text
 Fase actual: 5 (1:1, grupo, retry y rollback vivos validados)
-Soak:        2 ciclos de 72h completos con el core anterior; nuevo soak del core actual iniciado 23/11 11:53
+Soak:        2 ciclos de 72h con el core anterior; 72h completas con el core actual (17x1006, 4x503, 9726 msgs); segundo ciclo activo
 1006/503:    17 / 6 cierres documentados; 1006 = RST del edge, 503 = stream + FIN
 Bridge:      vendorizado, construido desde fuente
 Core:        oxidezap/whatsapp-rust@b8a15974 (main, Nov 23); bridge reconstruido y vendorizado
